@@ -1,4 +1,4 @@
-import { ClipboardList, Egg, Flame, Settings, ShieldCheck } from 'lucide-react'
+import { ClipboardList, Egg, ExternalLink, Flame, Settings, ShieldCheck } from 'lucide-react'
 import { SISTERS, SUBJECTS, ELECTIVE, FUUTAROU_IDLE } from '../data/sisters.js'
 import { summary } from '../lib/store.js'
 import { Avatar, Bar, Eyebrow, Ring } from './ui.jsx'
@@ -84,6 +84,12 @@ export default function Sidebar({ state, dispatch, view, setView, active, setAct
         <div className="space-y-0.5">
           <NavItem id="eggs" icon={Egg} label="Scrambled Eggs" hint={state.eggsBest ? `best ${state.eggsBest}/5` : 'bonus'} />
           <NavItem id="report" icon={ClipboardList} label="Report Card" hint={sum.approved ? '★' : undefined} />
+          {!window.nakano && (
+            <a href="../" className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[13.5px] font-semibold text-muted hover:bg-ink/[.04] hover:text-ink">
+              <ExternalLink size={17} strokeWidth={2.1} />
+              <span className="flex-1">Website &amp; downloads</span>
+            </a>
+          )}
         </div>
       </div>
 

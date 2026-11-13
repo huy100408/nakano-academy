@@ -145,6 +145,9 @@ function Nav({ y }) {
           <span className="font-display text-[16px] font-extrabold tracking-tight">Nakano Academy</span>
         </a>
         <nav className="ml-4 hidden items-center gap-6 text-[14px] font-semibold text-muted md:flex">
+          <a href={A('learn/')} className="flex items-center gap-1.5 text-ink hover:opacity-70">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Learn online
+          </a>
           <a href="#tutors" className="hover:text-ink">Tutors</a>
           <a href="#try" className="hover:text-ink">Try it</a>
           <a href="#features" className="hover:text-ink">Features</a>
@@ -215,8 +218,8 @@ function Hero({ y, os }) {
                 <Apple size={18} /> Download for macOS
               </a>
             )}
-            <a href={A('app/')} className="flex items-center gap-2.5 rounded-2xl border border-line bg-white px-6 py-4 text-[15px] font-bold shadow-card transition hover:-translate-y-0.5">
-              <Globe size={18} /> Open in browser
+            <a href={A('learn/')} className="flex items-center gap-2.5 rounded-2xl border border-line bg-white px-6 py-4 text-[15px] font-bold shadow-card transition hover:-translate-y-0.5">
+              <Globe size={18} /> Learn online free
             </a>
           </div>
           <div className="mt-4 text-[13px] text-faint">
@@ -366,6 +369,73 @@ function Tutors() {
             <span key={x.id} className="h-1.5 overflow-hidden rounded-full bg-ink/10 transition-all" style={{ width: i === idx ? 56 : 22 }}>
               <span className="block h-full rounded-full" style={{ background: x.color, width: i < idx ? '100%' : i === idx ? `${local * 100}%` : 0 }} />
             </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ───────── online learning ───────── */
+function LearnOnline() {
+  return (
+    <section id="learn" className="relative overflow-hidden py-28 sm:py-36" style={{ background: 'linear-gradient(180deg,#fffdf8,#f3f0ff 40%,#eef7ff)' }}>
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="grid items-end gap-8 lg:grid-cols-[1.2fr_1fr]">
+          <SectionHead
+            kicker="Online learning · 100% free"
+            title={
+              <>
+                Study in your browser.
+                <br />
+                <span className="rainbow-text">No download needed.</span>
+              </>
+            }
+            sub="The full app runs on the web: every lesson deck, quiz, Scrambled Eggs round and report card. No account and no payment. Progress is saved in your browser, and it works on phones and tablets too."
+          />
+          <div className="reveal flex flex-wrap gap-3 lg:justify-end">
+            <a href={A('learn/')} className="flex items-center gap-2.5 rounded-2xl bg-ink px-6 py-4 text-[15px] font-bold text-white shadow-lift transition hover:-translate-y-0.5">
+              <Globe size={18} /> Start learning free
+            </a>
+          </div>
+        </div>
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {SISTERS.map((s, i) => {
+            const sub = SUBJECTS.find((x) => x.key === s.subj)
+            return (
+              <a
+                key={s.id}
+                href={A(`learn/?tutor=${s.id}`)}
+                className="reveal card group relative flex flex-col overflow-hidden p-0 transition hover:-translate-y-1.5 hover:shadow-lift"
+                style={{ transitionDelay: `${i * 0.06}s` }}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img src={A(`videos/${s.id}-poster.jpg`)} alt="" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" style={{ objectPosition: s.id === 'miku' ? '50% 30%' : '25% 30%' }} />
+                  <span className="absolute left-3 top-3 rounded-full px-2.5 py-0.5 font-mono text-[11px] font-bold" style={{ background: s.color, color: s.onAccent }}>
+                    {s.no}
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col p-5">
+                  <div className="text-[12px] font-bold uppercase tracking-[.12em]" style={{ color: s.ink }}>
+                    {sub.label}
+                  </div>
+                  <div className="mt-1 font-display text-[22px] font-extrabold">{s.first}</div>
+                  <div className="mt-1 text-[13px] text-muted">
+                    {s.cards.length} cards · {s.quiz.length} questions
+                  </div>
+                  <div className="mt-4 flex items-center gap-1.5 text-[13.5px] font-bold" style={{ color: s.ink }}>
+                    Start lesson <ArrowRight size={15} className="transition group-hover:translate-x-1" />
+                  </div>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+        <div className="reveal mt-10 grid gap-3 text-[14px] font-semibold text-muted sm:grid-cols-4">
+          {['No sign-up', 'Works on any device', 'Progress saved locally', 'Free forever'].map((t) => (
+            <div key={t} className="flex items-center gap-2 rounded-xl bg-white/70 px-4 py-3 ring-1 ring-line">
+              <Check size={16} className="text-good" /> {t}
+            </div>
           ))}
         </div>
       </div>
@@ -656,7 +726,7 @@ function DownloadSection({ os }) {
           ))}
         </div>
         <div className="reveal mt-4 text-center text-[13.5px] text-muted">
-          Prefer not to install? <a href={A('app/')} className="font-bold text-ink underline">Use the web version</a> · All builds on{' '}
+          Prefer not to install? <a href={A('learn/')} className="font-bold text-ink underline">Use the web version</a> · All builds on{' '}
           <a href={`${REPO}/releases`} className="font-bold text-ink underline">
             GitHub Releases
           </a>
@@ -769,6 +839,8 @@ export default function Site() {
           <TryQuiz />
         </div>
       </section>
+
+      <LearnOnline />
 
       <section id="features" className="bg-white py-28 sm:py-36">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -887,6 +959,24 @@ export default function Site() {
       <DownloadSection os={os} />
       <Faq />
 
+      <section className="border-t border-line bg-white py-16">
+        <div className="reveal mx-auto flex max-w-3xl flex-col items-center px-5 text-center">
+          <div className="text-[12px] font-bold uppercase tracking-[.2em] text-faint">Credits</div>
+          <div className="mt-3 font-display text-[clamp(28px,4vw,44px)] font-extrabold leading-tight">
+            Built by <span className="rainbow-text">Brian Nguyen</span>
+          </div>
+          <a
+            href={GH_USER}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-6 flex items-center gap-3 rounded-full border border-line bg-white py-2 pl-2 pr-5 text-[15px] font-bold shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
+          >
+            <img src="https://github.com/huy100408.png?size=80" alt="" className="h-9 w-9 rounded-full" />
+            <GitHubIcon size={17} /> github.com/huy100408
+          </a>
+        </div>
+      </section>
+
       <footer className="border-t border-line bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-12 sm:flex-row sm:items-center sm:px-8">
           <div className="flex items-center gap-3">
@@ -894,9 +984,9 @@ export default function Site() {
             <div>
               <div className="font-display text-[15px] font-extrabold">Nakano Academy</div>
               <div className="text-[12.5px] text-muted">
-                Made by{' '}
+                Built by{' '}
                 <a href={GH_USER} className="font-semibold text-ink underline">
-                  @huy100408
+                  Brian Nguyen
                 </a>{' '}
                 · MIT License
               </div>

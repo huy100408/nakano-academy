@@ -6,7 +6,7 @@
   "main": "electron/main.cjs",
   "type": "module",
   "license": "MIT",
-  "author": "huy100408",
+  "author": "Brian Nguyen (https://github.com/huy100408)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -16,7 +16,7 @@
     "dist:mac": "vite build && electron-builder --mac",
     "dist:win": "vite build && electron-builder --win",
     "dist": "vite build && electron-builder --mac --win",
-    "build:site": "vite build -c vite.site.config.js && vite build --outDir site-dist/app",
+    "build:site": "vite build -c vite.site.config.js && vite build --outDir site-dist/learn",
     "dev:site": "vite -c vite.site.config.js"
   },
   "build": {

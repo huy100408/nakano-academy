@@ -148,7 +148,7 @@ export default function Classroom({ s, state, dispatch, voiceReady }) {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <header className="drag win-controls-pad flex items-end justify-between gap-6 px-8 pb-5 pt-7">
+      <header className="drag win-controls-pad flex flex-wrap items-end justify-between gap-4 px-4 pb-5 pt-6 sm:px-8 sm:pt-7">
         <div>
           <Eyebrow>
             Tutor No.{s.no} · {s.topic}
@@ -174,7 +174,7 @@ export default function Classroom({ s, state, dispatch, voiceReady }) {
       </header>
 
       {/* Body */}
-      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto px-8 pb-8">
+      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto px-4 pb-8 sm:px-8">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(380px,1fr)]">
           <div className="min-w-0 space-y-5">
             <Stage s={s} dialogue={dialogue} onMood={(m) => say(m)} onTalk={talk} onReplay={() => speak(dialogue.text, s.id)} voiceReady={voiceReady} />
@@ -191,7 +191,7 @@ export default function Classroom({ s, state, dispatch, voiceReady }) {
               )}
             </div>
           </div>
-          <section className="card flex min-h-[560px] flex-col p-6 xl:sticky xl:top-0 xl:max-h-[calc(100vh-130px)] xl:overflow-y-auto scroll-thin">
+          <section className="card flex min-h-[520px] flex-col p-4 sm:p-6 xl:sticky xl:top-0 xl:max-h-[calc(100vh-130px)] xl:overflow-y-auto scroll-thin">
             {tab === 'lesson' ? (
               <LessonDeck s={s} energy={state.energy} setEnergy={(v) => dispatch({ type: 'energy', value: v })} say={say} />
             ) : (

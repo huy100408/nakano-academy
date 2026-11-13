@@ -43,7 +43,7 @@ export default function EggsView({ dispatch }) {
 
   return (
     <div className="flex h-full flex-col" style={{ '--accent': '#EF4444', '--accent-ink': '#991B1B', '--on-accent': '#fff' }}>
-      <header className="drag win-controls-pad px-8 pb-5 pt-7">
+      <header className="drag win-controls-pad px-4 pb-5 pt-6 sm:px-8 sm:pt-7">
         <Eyebrow>Bonus mode · Love Recognition Test</Eyebrow>
         <h1 className="mt-1 font-display text-[30px] font-extrabold leading-none tracking-tight">Scrambled Eggs</h1>
         <p className="mt-2 max-w-2xl text-[14px] text-muted">
@@ -51,7 +51,7 @@ export default function EggsView({ dispatch }) {
         </p>
       </header>
 
-      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto px-8 pb-8">
+      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto px-4 pb-8 sm:px-8">
         {done ? (
           <div className="card anim-pop mx-auto max-w-xl p-10 text-center">
             <Eyebrow>Final result</Eyebrow>
@@ -108,7 +108,7 @@ export default function EggsView({ dispatch }) {
               ))}
 
               <Eyebrow className="mb-2 mt-5">Who is it?</Eyebrow>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
                 {SISTERS.map((s) => {
                   const reveal = guess && (s.id === r.who || s.id === guess)
                   const right = s.id === r.who

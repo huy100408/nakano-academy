@@ -65,7 +65,7 @@ export default function ReportView({ state, dispatch }) {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="drag win-controls-pad flex items-end justify-between px-8 pb-5 pt-7">
+      <header className="drag win-controls-pad flex items-end justify-between px-4 pb-5 pt-6 sm:px-8 sm:pt-7">
         <div>
           <Eyebrow>Asahiyama High · Mock exam · {state.coreMode ? '4-Core (CS excluded)' : '5-Full'}</Eyebrow>
           <h1 className="mt-1 font-display text-[30px] font-extrabold leading-none tracking-tight">Student Report Card</h1>
@@ -80,7 +80,7 @@ export default function ReportView({ state, dispatch }) {
         </button>
       </header>
 
-      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto px-8 pb-8">
+      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto px-4 pb-8 sm:px-8">
         <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             ['Mock exam', `${sum.total}`, `/ ${sum.max}`],

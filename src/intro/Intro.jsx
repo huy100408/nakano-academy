@@ -9,6 +9,9 @@ export const INTRO_VIDEO_ID = '9caoLJqXleQ'
 const COLORS = ['#FACC15', '#A855F7', '#3B82F6', '#22C55E', '#EF4444']
 const SISTER_IDS = ['ichika', 'nino', 'miku', 'yotsuba', 'itsuki']
 const TITLE_MS = 5600
+// The clip ends with a "thanks for watching" card from ~22.8 s. From this point the
+// title animation covers the picture while the song keeps playing to the end.
+const COVER_AT = 22.6
 
 export const introEnabled = () => {
   try {
@@ -54,6 +57,7 @@ function YouTubeClip({ onEnd }) {
       if (info && typeof info === 'object') {
         if (info.playerState === 0) finish()
         if (info.duration) dur = info.duration
+        if (dur > COVER_AT + 1 && info.currentTime >= COVER_AT) finish()
         if (dur && info.currentTime && dur - info.currentTime < 0.35) finish()
       }
     }
@@ -151,7 +155,12 @@ function TitleCard({ onDone }) {
  */
 export default function Intro({ onDone, gate = false }) {
   const [phase, setPhase] = useState(gate ? 'gate' : 'clip')
-  const toTitle = useCallback(() => setPhase('title'), [])
+  // keepAudio: the clip reached its end card, so the music plays on under the title card.
+  const [keepAudio, setKeepAudio] = useState(false)
+  const toTitle = useCallback(() => {
+    setKeepAudio(true)
+    setPhase('title')
+  }, [])
   const done = useCallback(() => onDone(), [onDone])
 
   useEffect(() => {
@@ -179,7 +188,7 @@ export default function Intro({ onDone, gate = false }) {
           <div className="intro-gate-hint">Sound on</div>
         </button>
       )}
-      {phase === 'clip' && <YouTubeClip onEnd={toTitle} />}
+      {(phase === 'clip' || (phase === 'title' && keepAudio)) && <YouTubeClip onEnd={toTitle} />}
       {phase === 'title' && <TitleCard onDone={done} />}
       {phase !== 'gate' && (
         <button className="intro-skip" onClick={() => (phase === 'title' ? done() : setPhase('title'))}>

@@ -4,7 +4,7 @@ A desktop study app inspired by *The Quintessential Quintuplets*. Each Nakano si
 
 Runs on **macOS** (`.dmg`, Apple Silicon and Intel), **Windows** (`.exe` installer) and in the browser.
 
-**Website:** https://huy100408.github.io/nakano-academy/ · **Web version:** https://huy100408.github.io/nakano-academy/app/ · **Author:** [@huy100408](https://github.com/huy100408)
+**Website:** https://huy100408.github.io/nakano-academy/ · **Learn online (free):** https://huy100408.github.io/nakano-academy/learn/ · **Built by** [Brian Nguyen](https://github.com/huy100408)
 
 | No. | Tutor | Subject | Desk item |
 | --- | --- | --- | --- |
