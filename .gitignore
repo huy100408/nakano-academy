@@ -7,3 +7,4 @@ _source_videos/
 *.log
 .env
 .claude/
+supabase/.temp/
