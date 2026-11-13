@@ -71,7 +71,7 @@ body.locked {
 }
 
 .rainbow-text {
-  background: linear-gradient(90deg, #eab308, #a855f7, #3b82f6, #22c55e, #ef4444, #eab308);
+  background: linear-gradient(90deg, #f59e0b, #f43f5e, #6366f1, #10b981, #dc2626, #f59e0b);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;

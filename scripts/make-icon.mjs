@@ -2,7 +2,7 @@
 import sharp from 'sharp'
 import { mkdirSync } from 'node:fs'
 
-const colors = ['#FACC15', '#A855F7', '#3B82F6', '#22C55E', '#EF4444']
+const colors = ['#F59E0B', '#F43F5E', '#6366F1', '#10B981', '#DC2626']
 const stripes = colors.map((c, i) => `<rect x="${152 + i * 144}" y="760" width="144" height="56" fill="${c}"/>`).join('')
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
   <defs>

@@ -2,12 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Nakano Academy · Study with the Quintuplets</title>
+    <meta name="description" content="Free online tutoring with the five Nakano sisters: Mathematics, English, AP Human Geography, Computer Science and Science. Sign in with Google and your progress syncs across every device." />
+    <meta name="theme-color" content="#f6f3ee" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Nakano Academy · The Quintessential Quintuplets Tutor App" />
+    <meta property="og:description" content="Five tutors, five subjects, one 500/500 goal. Free, with cloud sync." />
+    <meta property="og:url" content="https://huy100408.github.io/nakano-academy/learn/" />
+    <meta property="og:image" content="https://huy100408.github.io/nakano-academy/icon.png" />
+    <meta name="twitter:card" content="summary" />
     <link rel="icon" type="image/png" href="./icon.png" />
-    <title>Nakano Academy</title>
+    <link rel="apple-touch-icon" href="./icon.png" />
+    <style>
+      html, body, #root { height: 100%; margin: 0; background: #f6f3ee; }
+      .boot { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+        font: 600 14px/1.4 -apple-system, 'Segoe UI', system-ui, sans-serif; color: #6b6b76; }
+      .boot-bars { display: flex; gap: 6px; }
+      .boot-bars i { width: 28px; height: 6px; border-radius: 9px; animation: boot 1.2s ease-in-out infinite; }
+      .boot-bars i:nth-child(1) { background: #f59e0b; }
+      .boot-bars i:nth-child(2) { background: #f43f5e; animation-delay: .1s; }
+      .boot-bars i:nth-child(3) { background: #6366f1; animation-delay: .2s; }
+      .boot-bars i:nth-child(4) { background: #10b981; animation-delay: .3s; }
+      .boot-bars i:nth-child(5) { background: #dc2626; animation-delay: .4s; }
+      @keyframes boot { 50% { transform: translateY(-6px) scaleX(1.15); } }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot" role="status">
+        <div class="boot-bars"><i></i><i></i><i></i><i></i><i></i></div>
+        Opening Nakano Academy…
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

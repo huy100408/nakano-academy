@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 
 // Strict CSP for the packaged app only (the dev server needs inline scripts for HMR).
 const CSP =
-  "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; " +
-  "style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; connect-src 'self' https://api.fish.audio; frame-src https://www.youtube-nocookie.com https://www.youtube.com"
+  "default-src 'self'; img-src 'self' data: blob: https:; media-src 'self' blob:; " +
+  "style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; connect-src 'self' https://api.fish.audio https://*.supabase.co wss://*.supabase.co; frame-src https://www.youtube-nocookie.com https://www.youtube.com"
 
 const cspPlugin = {
   name: 'inject-csp',

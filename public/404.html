@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nakano Academy</title>
+    <script>
+      // GitHub Pages serves this for unknown paths. Send visitors (including anyone
+      // returning from Google sign-in to a mistyped path) back into the app, keeping
+      // the ?code=… / #… so Supabase can finish signing them in.
+      ;(function () {
+        var base = '/nakano-academy/'
+        var path = location.pathname
+        var target = path.indexOf(base + 'learn') === 0 ? base + 'learn/' : base
+        location.replace(target + location.search + location.hash)
+      })()
+    </script>
+  </head>
+  <body></body>
+</html>

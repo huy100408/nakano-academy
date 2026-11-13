@@ -20,7 +20,9 @@ import {
   Timer,
   X,
 } from 'lucide-react'
-import { EGG_ROUNDS, SISTERS, SUBJECTS, bySubject } from '../src/data/sisters.js'
+import { SISTERS, SUBJECTS, bySubject } from '../src/data/sisters.js'
+import { EGG_ROUNDS, MODULES } from '../src/data/curriculum.js'
+import { itemForSister } from '../src/data/items.js'
 import Intro from '../src/intro/Intro.jsx'
 
 const GH_USER = 'https://github.com/huy100408'
@@ -168,7 +170,7 @@ function Nav({ y }) {
           className="h-full"
           style={{
             width: `${Math.min(100, (y / Math.max(1, (typeof document !== 'undefined' ? document.documentElement.scrollHeight : 1) - window.innerHeight)) * 100)}%`,
-            background: 'linear-gradient(90deg,#eab308,#a855f7,#3b82f6,#22c55e,#ef4444)',
+            background: 'linear-gradient(90deg,#f59e0b,#f43f5e,#6366f1,#10b981,#dc2626)',
           }}
         />
       </div>
@@ -196,7 +198,7 @@ function Hero({ y, os }) {
                 <span key={s.id} className="h-3 w-3 rounded-full ring-2 ring-white" style={{ background: s.color }} />
               ))}
             </span>
-            Free &amp; open source · macOS &amp; Windows
+            Free &amp; open source · Web, macOS &amp; Windows
           </div>
           <h1 className="mt-6 font-display text-[clamp(44px,6.6vw,96px)] font-extrabold leading-[0.95] tracking-[-0.03em]">
             The Quintessential
@@ -268,7 +270,7 @@ function Hero({ y, os }) {
 }
 
 function Marquee() {
-  const items = SISTERS.flatMap((s) => [s.cards[0].front, s.cards[2].front, s.cards[4].front])
+  const items = SISTERS.flatMap((s) => MODULES[s.subj].flashcards.slice(0, 4).map((c) => c.front))
   return (
     <div className="relative overflow-hidden border-y border-line bg-white py-4">
       <div className="marquee flex w-max gap-10 whitespace-nowrap">
@@ -352,14 +354,14 @@ function Tutors() {
             </div>
             <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-ink/75">{s.persona}</p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {s.cards.map((c) => (
+              {MODULES[s.subj].flashcards.slice(0, 6).map((c) => (
                 <span key={c.front} className="rounded-full border bg-white/70 px-3 py-1 text-[13px] font-semibold" style={{ borderColor: `color-mix(in oklab, ${s.color} 40%, white)` }}>
                   {c.front}
                 </span>
               ))}
             </div>
             <div className="mt-6 flex items-center gap-2 text-[13.5px] font-semibold text-muted">
-              <Sparkles size={15} style={{ color: s.ink }} /> Desk item: {s.item.name}
+              <Sparkles size={15} style={{ color: s.ink }} /> Signature item: {itemForSister(s.id).name}
             </div>
           </div>
         </div>
@@ -391,7 +393,7 @@ function LearnOnline() {
                 <span className="rainbow-text">No download needed.</span>
               </>
             }
-            sub="The full app runs on the web: every lesson deck, quiz, Scrambled Eggs round and report card. No account and no payment. Progress is saved in your browser, and it works on phones and tablets too."
+            sub="The full app runs on the web: every flashcard, quiz, Scrambled Eggs round and report card. Sign in with Google and your progress syncs to every phone, tablet and computer you use. No payment, ever."
           />
           <div className="reveal flex flex-wrap gap-3 lg:justify-end">
             <a href={A('learn/')} className="flex items-center gap-2.5 rounded-2xl bg-ink px-6 py-4 text-[15px] font-bold text-white shadow-lift transition hover:-translate-y-0.5">
@@ -421,7 +423,7 @@ function LearnOnline() {
                   </div>
                   <div className="mt-1 font-display text-[22px] font-extrabold">{s.first}</div>
                   <div className="mt-1 text-[13px] text-muted">
-                    {s.cards.length} cards · {s.quiz.length} questions
+                    {MODULES[s.subj].flashcards.length} cards · {MODULES[s.subj].questions.length} questions
                   </div>
                   <div className="mt-4 flex items-center gap-1.5 text-[13.5px] font-bold" style={{ color: s.ink }}>
                     Start lesson <ArrowRight size={15} className="transition group-hover:translate-x-1" />
@@ -432,7 +434,7 @@ function LearnOnline() {
           })}
         </div>
         <div className="reveal mt-10 grid gap-3 text-[14px] font-semibold text-muted sm:grid-cols-4">
-          {['No sign-up', 'Works on any device', 'Progress saved locally', 'Free forever'].map((t) => (
+          {['Sign in with Google', 'Works on any device', 'Progress synced to the cloud', 'Free forever'].map((t) => (
             <div key={t} className="flex items-center gap-2 rounded-xl bg-white/70 px-4 py-3 ring-1 ring-line">
               <Check size={16} className="text-good" /> {t}
             </div>
@@ -450,7 +452,8 @@ function TryQuiz() {
   const [qi, setQi] = useState(0)
   const [pick, setPick] = useState(null)
   const [score, setScore] = useState({ c: 0, n: 0 })
-  const q = s.quiz[qi % s.quiz.length]
+  const quiz = MODULES[s.subj].questions
+  const q = quiz[qi % quiz.length]
   const choose = (i) => {
     if (pick !== null) return
     setPick(i)
@@ -485,7 +488,7 @@ function TryQuiz() {
       <div key={`${subj}-${qi}`} className="anim-fade-up p-6 sm:p-8">
         <div className="mb-3 flex items-center justify-between text-[12px] font-bold uppercase tracking-[.14em] text-faint">
           <span>
-            {s.first} · Question {(qi % s.quiz.length) + 1}/{s.quiz.length}
+            {s.first} · Question {(qi % quiz.length) + 1}/{quiz.length}
           </span>
           <span className="font-mono normal-case tracking-normal">
             {score.c}/{score.n} correct
@@ -530,7 +533,7 @@ function TryQuiz() {
 function TryCards() {
   const [k, setK] = useState(0)
   const [flip, setFlip] = useState(false)
-  const all = useMemo(() => SISTERS.flatMap((s) => s.cards.map((c) => ({ ...c, s }))), [])
+  const all = useMemo(() => SISTERS.flatMap((s) => MODULES[s.subj].flashcards.map((c) => ({ ...c, s }))), [])
   const c = all[k % all.length]
   return (
     <div>
@@ -550,7 +553,9 @@ function TryCards() {
           </div>
           <div className="back flex min-h-[260px] flex-col items-center justify-center rounded-3xl border p-8 text-center shadow-card" style={{ background: `color-mix(in oklab, ${c.s.color} 10%, white)`, borderColor: `color-mix(in oklab, ${c.s.color} 35%, white)` }}>
             <p className="whitespace-pre-line font-display text-[20px] font-bold leading-relaxed">{c.back}</p>
-            <p className="mt-4 max-w-md text-[13.5px] leading-relaxed text-muted">{c.deep}</p>
+            <p className="mt-4 max-w-md text-[13.5px] leading-relaxed text-muted"><b>Takeaway:</b> {c.takeaway}<br />
+              <b>Memory hook:</b> {c.hook}
+            </p>
           </div>
         </div>
       </div>
@@ -636,8 +641,8 @@ function TryEggs() {
   return (
     <div>
       <div className="rounded-2xl bg-red-50 p-4 text-[14.5px] leading-relaxed">
-        <div className="text-[11px] font-bold uppercase tracking-[.14em] text-red-700/70">“Itsuki” says</div>“{r.subject}”
-        <div className="mt-2 text-[13px] text-muted">Habit: {r.posture}</div>
+        <div className="text-[11px] font-bold uppercase tracking-[.14em] text-red-700/70">“Itsuki” says</div>“{r.academic}”
+        <div className="mt-2 text-[13px] text-muted">Habit: {r.tell}</div>
       </div>
       <div className="mt-4 grid grid-cols-5 gap-2">
         {SISTERS.map((s) => {
@@ -706,7 +711,7 @@ function DownloadSection({ os }) {
       <div className="blob left-[10%] top-[10%] h-[30vw] w-[30vw] bg-violet-200" />
       <div className="blob bottom-0 right-[5%] h-[28vw] w-[28vw] bg-green-200" />
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
-        <SectionHead center kicker="Installer" title="Get Nakano Academy" sub="Free forever. No account, no ads, no tracking. Your progress stays on your computer." />
+        <SectionHead center kicker="Installer" title="Get Nakano Academy" sub="Free forever, no ads. Sign in with Google once and the desktop app shares your progress with the web version." />
         <div className="reveal mt-14 grid gap-5 md:grid-cols-3">
           {[
             ['macOS', 'Apple Silicon', 'M1 · M2 · M3 · M4', FILES.macArm, Apple, os === 'mac'],
@@ -770,12 +775,13 @@ function DownloadSection({ os }) {
 
 /* ───────── FAQ ───────── */
 const FAQ = [
-  ['Is it really free?', 'Yes. Nakano Academy is free and open source under the MIT license. There are no ads, accounts or in-app purchases.'],
-  ['Which subjects are covered?', 'Mathematics (Ichika), English (Nino), AP Human Geography (Miku), Computer Science (Yotsuba) and Science (Itsuki). Each has 6 concept cards and 8 quiz questions with explanations, and the order changes on every attempt.'],
+  ['Is it really free?', 'Yes. Nakano Academy is free and open source under the MIT license. There are no ads or in-app purchases. You only need a Google account to sign in.'],
+  ['Which subjects are covered?', 'Mathematics (Ichika), English (Nino), AP Human Geography (Miku), Computer Science (Yotsuba) and Science (Itsuki). Each has 10 flashcards and 24 questions across three tiers: Tutoring Session, Midterm and Final Exam.'],
   ['Do the sisters talk?', 'Optional voices are supported through Fish Audio. Add your own API key and voice IDs in Settings. The key stays on your computer.'],
-  ['Where is my progress saved?', 'Locally, on your device. Nothing is uploaded anywhere.'],
+  ['Why do I need to sign in?', 'Signing in with Google lets your scores, streaks, items and weak-spot review schedule follow you between the web, phone, tablet and desktop app. We store only your name, email, profile photo and study progress.'],
+  ['Where is my progress saved?', 'In a Supabase database, protected so only your account can read or change it. Changes you make offline are queued and synced when you reconnect.'],
   ['Why does macOS or Windows warn me when I open it?', 'The builds are not code-signed yet, which costs money for a hobby project. The source is public, so you can read it or build it yourself.'],
-  ['Can I add questions?', 'Please do! All lesson content lives in one file, src/data/sisters.js. Open a pull request on GitHub.'],
+  ['Can I add questions?', 'Please do! Each subject is one file in src/data/subjects/. Open a pull request on GitHub.'],
   ['Is this official?', 'No. It is a non-commercial fan project inspired by The Quintessential Quintuplets by Negi Haruba, and it is not affiliated with the author, Kodansha or the anime studios.'],
 ]
 function Faq() {
@@ -850,8 +856,8 @@ export default function Site() {
               <div className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-[.14em] text-muted">
                 <Layers size={16} /> Lesson deck
               </div>
-              <h3 className="mt-2 font-display text-[28px] font-extrabold">30 flip cards, each with a deep note</h3>
-              <p className="mt-2 text-[15px] text-muted">Itsuki won’t reveal hers unless you feed her a curry bun.</p>
+              <h3 className="mt-2 font-display text-[28px] font-extrabold">50 flashcards with memory hooks</h3>
+              <p className="mt-2 text-[15px] text-muted">Every card has a key takeaway and a memory hook in the sister’s voice.</p>
               <div className="mt-6">
                 <TryCards />
               </div>
@@ -861,7 +867,7 @@ export default function Site() {
                 <Star size={16} /> Report card
               </div>
               <h3 className="mt-2 font-display text-[28px] font-extrabold">Win Mr. Nakano’s approval</h3>
-              <p className="mt-2 text-[15px] text-muted">Score 30+ in every subject to unlock the School Festival certificate. Drag the sliders to try it.</p>
+              <p className="mt-2 text-[15px] text-muted">Your report card grades each subject from F to S+. Drag the sliders to see the radar move.</p>
               <div className="mt-6">
                 <TryRadar />
               </div>
@@ -878,10 +884,10 @@ export default function Site() {
             </div>
             <div className="reveal grid gap-4 sm:grid-cols-2" style={{ transitionDelay: '.1s' }}>
               {[
-                [PencilLine, 'Live quiz', '40 questions with instant feedback and step-by-step explanations in each sister’s voice.', '#FACC15'],
-                [Sparkles, 'Desk items', 'Ichika’s script, Nino’s pastry, Miku’s matcha soda, Yotsuba’s medal and Itsuki’s curry bun give 50/50 hints or streak shields.', '#A855F7'],
+                [PencilLine, 'Live quiz', '120 questions with instant feedback and step-by-step explanations in each sister’s voice.', '#FACC15'],
+                [Sparkles, 'Desk items', 'Ichika’s script notes (50/50), Nino’s kitchen timer (streak shield), Miku’s headphones (hint), Yotsuba’s ribbon (double points) and Itsuki’s curry bun (+10% approval).', '#A855F7'],
                 [Timer, 'Pomodoro', 'Yotsuba runs 25/5 focus sprints and cheers you through every lap.', '#22C55E'],
-                [Heart, 'Affection', 'Every correct answer brings you closer to your tutor. Who will you bond with most?', '#EF4444'],
+                [Heart, 'Spaced repetition', 'Missed questions come back as weak spots, and review dates follow you to every device.', '#EF4444'],
               ].map(([Icon, t, d, c]) => (
                 <div key={t} className="card p-6">
                   <span className="grid h-10 w-10 place-items-center rounded-xl text-white" style={{ background: c }}>
@@ -900,8 +906,8 @@ export default function Site() {
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 text-center sm:px-8 md:grid-cols-4">
           {[
             [5, '', 'Tutors'],
-            [30, '', 'Concept cards'],
-            [40, '', 'Quiz questions'],
+            [50, '', 'Flashcards'],
+            [120, '', 'Quiz questions'],
             [500, '', 'Points to master'],
           ].map(([n, s, l], i) => (
             <div key={l} className="reveal" style={{ transitionDelay: `${i * 0.08}s` }}>
@@ -923,7 +929,7 @@ export default function Site() {
               <div className="text-[12px] font-bold uppercase tracking-[.2em] text-white/50">Open source</div>
               <h2 className="mt-3 font-display text-[clamp(32px,4.4vw,52px)] font-extrabold leading-tight">Built in the open. Add your own lessons.</h2>
               <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-white/70">
-                React, Tailwind and Electron, MIT licensed. All lesson content lives in a single file, so adding a question is one pull request away.
+                React, Tailwind and Electron, MIT licensed. Each subject is a single file, so adding a question is one pull request away.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href={REPO} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 rounded-2xl bg-white px-5 py-3.5 text-[15px] font-bold text-ink transition hover:-translate-y-0.5">

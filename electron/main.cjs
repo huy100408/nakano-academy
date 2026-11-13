@@ -6,6 +6,59 @@ const fs = require('node:fs')
 const isMac = process.platform === 'darwin'
 const DEV_URL = process.env.VITE_DEV_SERVER_URL
 
+/* ── Google sign-in return link (nakano://auth-callback?code=…) ──
+   Sign-in happens in the user's default browser; Supabase sends it back to this
+   custom link, and the OS hands the link to this app. */
+const PROTOCOL = 'nakano'
+let mainWindow = null
+let pendingAuthUrl = null
+
+if (process.defaultApp && process.argv.length >= 2) {
+  app.setAsDefaultProtocolClient(PROTOCOL, process.execPath, [path.resolve(process.argv[1])])
+} else {
+  app.setAsDefaultProtocolClient(PROTOCOL)
+}
+
+function deliverAuthUrl(url) {
+  if (!url || !url.startsWith(`${PROTOCOL}://`)) return
+  pendingAuthUrl = url
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.show()
+    mainWindow.focus()
+    mainWindow.webContents.send('auth:callback', url)
+  }
+}
+
+// One running copy: a second launch (Windows passes the link this way) forwards its link.
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+} else {
+  app.on('second-instance', (_e, argv) => deliverAuthUrl(argv.find((a) => a.startsWith(`${PROTOCOL}://`))))
+}
+app.on('open-url', (e, url) => {
+  e.preventDefault()
+  deliverAuthUrl(url)
+})
+deliverAuthUrl(process.argv.find((a) => a.startsWith(`${PROTOCOL}://`)))
+
+ipcMain.handle('auth:take-pending', () => {
+  const u = pendingAuthUrl
+  pendingAuthUrl = null
+  return u
+})
+// Only the Supabase sign-in URL may be opened from the page.
+ipcMain.handle('auth:open-external', (_e, url) => {
+  try {
+    const u = new URL(url)
+    if (u.protocol === 'https:' && (u.hostname.endsWith('.supabase.co') || u.hostname === 'accounts.google.com')) {
+      shell.openExternal(url)
+      return true
+    }
+  } catch {}
+  return false
+})
+
 /* ── Settings (kept in the OS user-data folder, never in the repo) ── */
 const settingsFile = () => path.join(app.getPath('userData'), 'settings.json')
 const DEFAULT_SETTINGS = {
@@ -85,6 +138,8 @@ function createWindow() {
     },
   })
   nativeTheme.themeSource = 'light'
+  mainWindow = win
+  win.on('closed', () => (mainWindow = null))
   win.once('ready-to-show', () => win.show())
 
   // Open external links in the user's browser, never inside the app.

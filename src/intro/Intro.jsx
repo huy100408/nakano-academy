@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './intro.css'
 
 export const INTRO_VIDEO_ID = '9caoLJqXleQ'
-const COLORS = ['#FACC15', '#A855F7', '#3B82F6', '#22C55E', '#EF4444']
+const COLORS = ['#F59E0B', '#F43F5E', '#6366F1', '#10B981', '#DC2626']
 const SISTER_IDS = ['ichika', 'nino', 'miku', 'yotsuba', 'itsuki']
 const TITLE_MS = 5600
 // The clip ends with a "thanks for watching" card from ~22.8 s. From this point the

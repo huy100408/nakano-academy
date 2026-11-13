@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { CakeSlice, CupSoda, Medal, Sandwich, ScrollText } from 'lucide-react'
+import { Headphones, Ribbon, Sandwich, ScrollText, Timer } from 'lucide-react'
 
-export const ITEM_ICONS = { ScrollText, CakeSlice, CupSoda, Medal, Sandwich }
+export const ITEM_ICONS = { ScrollText, Timer, Headphones, Ribbon, Sandwich }
 
 export const asset = (p) => `./${p}`
 
