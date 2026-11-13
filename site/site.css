@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+@source '../src';
+@source './';
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'M PLUS Rounded 1c', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --color-paper: #fffdf8;
+  --color-ink: #18181d;
+  --color-muted: #6b6b76;
+  --color-faint: #a1a1aa;
+  --color-line: rgb(24 24 29 / 0.08);
+  --color-good: #16a34a;
+  --color-bad: #dc2626;
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
+  --color-accent-soft: color-mix(in oklab, var(--accent) 14%, white);
+  --color-accent-softer: color-mix(in oklab, var(--accent) 7%, white);
+  --color-accent-line: color-mix(in oklab, var(--accent) 38%, white);
+  --shadow-card: 0 1px 2px rgb(24 24 29 / 0.04), 0 4px 16px -6px rgb(24 24 29 / 0.08);
+  --shadow-lift: 0 2px 4px rgb(24 24 29 / 0.05), 0 24px 60px -20px rgb(24 24 29 / 0.3);
+}
+
+:root {
+  --accent: #3b82f6;
+  --accent-ink: #1e40af;
+  --on-accent: #fff;
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body.locked {
+  overflow: hidden;
+}
+::selection {
+  background: #c4b5fd;
+}
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+.rainbow-text {
+  background: linear-gradient(90deg, #eab308, #a855f7, #3b82f6, #22c55e, #ef4444, #eab308);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: slide 8s linear infinite;
+}
+@keyframes slide {
+  to {
+    background-position: 200% 0;
+  }
+}
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+@keyframes floaty {
+  50% {
+    transform: translateY(-14px) rotate(var(--r, 0deg));
+  }
+}
+.floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 40s linear infinite;
+}
+
+/* Flashcard flip (shared with app components) */
+.flip {
+  perspective: 1400px;
+}
+.flip-inner {
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  display: grid;
+}
+.flip-inner > * {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-inner.on {
+  transform: rotateY(180deg);
+}
+.flip-inner .back {
+  transform: rotateY(180deg);
+}
+.ruled {
+  background-image: repeating-linear-gradient(0deg, transparent 0 31px, rgb(24 24 29 / 0.05) 31px 32px);
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.anim-fade-up {
+  animation: fade-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

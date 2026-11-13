@@ -1,0 +1,9 @@
+node_modules/
+dist/
+release/
+site-dist/
+_source_videos/
+.DS_Store
+*.log
+.env
+.claude/
