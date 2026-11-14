@@ -17,6 +17,8 @@ export type SessionRow = Tables['study_sessions']['Row']
 export type SessionInsert = Tables['study_sessions']['Insert']
 export type EggsRow = Tables['scrambled_eggs_logs']['Row']
 export type EggsInsert = Tables['scrambled_eggs_logs']['Insert']
+export type LessonRow = Tables['lesson_progress']['Row']
+export type LessonUpsert = Tables['lesson_progress']['Insert']
 
 export type SyncStatus = 'synced' | 'syncing' | 'offline'
 
@@ -25,6 +27,7 @@ export interface CloudSnapshot {
   progress: ProgressRow[]
   sessions: SessionRow[]
   eggsLogs: EggsRow[]
+  lessons: LessonRow[]
 }
 
 interface Queue {
@@ -33,9 +36,10 @@ interface Queue {
   progress: Record<string, ProgressUpsert>
   sessions: SessionInsert[]
   eggs: EggsInsert[]
+  lessons: Record<string, LessonUpsert>
 }
 
-const emptyQueue = (): Queue => ({ reset: false, profile: null, progress: {}, sessions: [], eggs: [] })
+const emptyQueue = (): Queue => ({ reset: false, profile: null, progress: {}, sessions: [], eggs: [], lessons: {} })
 const HISTORY_LIMIT = 50
 
 export const DEFAULT_PROFILE_FIELDS = {
@@ -117,7 +121,7 @@ export class SupabaseSync {
 
   hasPending() {
     const q = this.queue
-    return q.reset || !!q.profile || Object.keys(q.progress).length > 0 || q.sessions.length > 0 || q.eggs.length > 0
+    return q.reset || !!q.profile || Object.keys(q.progress).length > 0 || q.sessions.length > 0 || q.eggs.length > 0 || Object.keys(q.lessons || {}).length > 0
   }
 
   /* ── hydrate ── */
@@ -128,13 +132,14 @@ export class SupabaseSync {
   async hydrate(identity: { email: string | null; full_name: string | null; avatar_url: string | null }): Promise<CloudSnapshot> {
     if (this.hasPending() && navigator.onLine) await this.flush()
     try {
-      const [profileRes, progressRes, sessionsRes, eggsRes] = await Promise.all([
+      const [profileRes, progressRes, sessionsRes, eggsRes, lessonsRes] = await Promise.all([
         supabase.from('user_profiles').select('*').eq('user_id', this.userId).maybeSingle(),
         supabase.from('question_progress').select('*').eq('user_id', this.userId),
         supabase.from('study_sessions').select('*').eq('user_id', this.userId).order('completed_at', { ascending: false }).limit(HISTORY_LIMIT),
         supabase.from('scrambled_eggs_logs').select('*').eq('user_id', this.userId).order('played_at', { ascending: false }).limit(HISTORY_LIMIT),
+        supabase.from('lesson_progress').select('*').eq('user_id', this.userId),
       ])
-      const err = profileRes.error || progressRes.error || sessionsRes.error || eggsRes.error
+      const err = profileRes.error || progressRes.error || sessionsRes.error || eggsRes.error || lessonsRes.error
       if (err) throw err
 
       let profile = profileRes.data
@@ -152,14 +157,14 @@ export class SupabaseSync {
         profile = { ...profile, ...identity }
         this.enqueueProfile(identity)
       }
-      const snap: CloudSnapshot = { profile, progress: progressRes.data, sessions: sessionsRes.data, eggsLogs: eggsRes.data }
+      const snap: CloudSnapshot = { profile, progress: progressRes.data, sessions: sessionsRes.data, eggsLogs: eggsRes.data, lessons: lessonsRes.data }
       this.cache(snap)
       this.setStatus(this.hasPending() ? 'syncing' : 'synced')
       return snap
     } catch (e) {
       const cached = readJSON<CloudSnapshot | null>(this.cacheKey, null)
       this.setStatus('offline')
-      if (cached) return cached
+      if (cached) return { ...cached, lessons: cached.lessons || [] }
       throw e
     }
   }
@@ -180,6 +185,11 @@ export class SupabaseSync {
   }
   enqueueProgress(row: ProgressUpsert) {
     this.queue.progress[progressKey(row.subject_id, row.question_id)] = { ...row, user_id: this.userId }
+    this.persistAndSchedule()
+  }
+  enqueueLesson(row: LessonUpsert) {
+    this.queue.lessons = this.queue.lessons || {}
+    this.queue.lessons[`${row.subject_id}:${row.lesson_id}`] = { ...row, user_id: this.userId }
     this.persistAndSchedule()
   }
   enqueueSession(row: SessionInsert) {
@@ -238,6 +248,7 @@ export class SupabaseSync {
           supabase.from('question_progress').delete().eq('user_id', uid),
           supabase.from('study_sessions').delete().eq('user_id', uid),
           supabase.from('scrambled_eggs_logs').delete().eq('user_id', uid),
+          supabase.from('lesson_progress').delete().eq('user_id', uid),
           supabase.from('user_profiles').update(DEFAULT_PROFILE_FIELDS).eq('user_id', uid),
         ])
         const err = results.find((r) => r.error)?.error
@@ -250,6 +261,11 @@ export class SupabaseSync {
       const progress = Object.values(batch.progress)
       if (progress.length) {
         const { error } = await supabase.from('question_progress').upsert(progress, { onConflict: 'user_id,subject_id,question_id' })
+        if (error) throw error
+      }
+      const lessons = Object.values(batch.lessons || {})
+      if (lessons.length) {
+        const { error } = await supabase.from('lesson_progress').upsert(lessons, { onConflict: 'user_id,subject_id,lesson_id' })
         if (error) throw error
       }
       if (batch.sessions.length) {
@@ -287,6 +303,7 @@ function mergeQueues(older: Queue, newer: Queue): Queue {
     progress: { ...older.progress, ...newer.progress },
     sessions: [...older.sessions, ...newer.sessions],
     eggs: [...older.eggs, ...newer.eggs],
+    lessons: { ...(older.lessons || {}), ...(newer.lessons || {}) },
   }
 }
 

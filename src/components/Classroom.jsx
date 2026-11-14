@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BookOpenCheck, Flame, GraduationCap, Layers, Mic, Pause, PencilLine, Play, RotateCcw, SkipForward, Target, Timer } from 'lucide-react'
+import { BookMarked, BookOpenCheck, Flame, GraduationCap, Layers, Mic, Pause, PencilLine, Play, RotateCcw, SkipForward, Target, Timer } from 'lucide-react'
+import SyllabusTree from '../features/whiteboard/SyllabusTree.jsx'
+import WhiteboardStage from '../features/whiteboard/WhiteboardStage.jsx'
 import { MODULES, TIERS } from '../data/curriculum.js'
 import { itemForSister } from '../data/items.js'
 import { SUBJECTS } from '../data/sisters.js'
@@ -164,7 +166,8 @@ function ModePicker({ s, onStart }) {
 
 export default function Classroom({ s, voiceReady }) {
   const { state } = useAcademy()
-  const [tab, setTab] = useState('lesson')
+  const [tab, setTab] = useState('course')
+  const [openLesson, setOpenLesson] = useState(null)
   const [mode, setMode] = useState(null)
   const [runKey, setRunKey] = useState(0)
   const [dialogue, setDialogue] = useState(() => ({ mood: 'idle', text: pick(s.lines.idle), key: 1 }))
@@ -195,6 +198,8 @@ export default function Classroom({ s, voiceReady }) {
   }, [mode, runKey, s.subj]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const subject = SUBJECTS.find((x) => x.key === s.subj)
+  if (openLesson)
+    return <WhiteboardStage s={s} subject={s.subj} lessonId={openLesson} onExit={() => setOpenLesson(null)} onOpen={setOpenLesson} />
   const modeLabel = mode === 'review' ? 'Weak-spot review' : TIERS.find((t) => t.key === mode)?.label
 
   return (
@@ -218,6 +223,7 @@ export default function Classroom({ s, voiceReady }) {
             say(k === 'practice' ? 'teaching' : 'idle')
           }}
           options={[
+            ['course', 'Course', BookMarked],
             ['lesson', 'Flashcards', Layers],
             ['practice', 'Practice', PencilLine],
             ['voice', 'Voice lesson', Mic],
@@ -235,7 +241,9 @@ export default function Classroom({ s, voiceReady }) {
             </div>
           </div>
           <section className="card scroll-thin flex min-h-[520px] flex-col p-4 sm:p-6 xl:sticky xl:top-0 xl:max-h-[calc(100vh-130px)] xl:overflow-y-auto">
-            {tab === 'lesson' ? (
+            {tab === 'course' ? (
+              <SyllabusTree subject={s.subj} onOpen={setOpenLesson} />
+            ) : tab === 'lesson' ? (
               <LessonDeck s={s} say={say} />
             ) : tab === 'voice' ? (
               <VoiceLesson s={s} say={say} />

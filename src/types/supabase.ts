@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      lesson_progress: {
+        Row: {
+          attempts: number
+          beats_done: number
+          best_score: number
+          check_passed: boolean
+          completed: boolean
+          completed_at: string | null
+          lesson_id: string
+          subject_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          beats_done?: number
+          best_score?: number
+          check_passed?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          lesson_id: string
+          subject_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          beats_done?: number
+          best_score?: number
+          check_passed?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          lesson_id?: string
+          subject_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       question_progress: {
         Row: {
           correct_count: number

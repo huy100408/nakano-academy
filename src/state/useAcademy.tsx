@@ -12,6 +12,7 @@ import {
   progressKey,
   type CloudSnapshot,
   type EggsRow,
+  type LessonRow,
   type Profile,
   type ProfilePatch,
   type ProgressRow,
@@ -26,6 +27,7 @@ export type Mastery = Record<SubjectKey, number>
 export type Inventory = Record<ItemKey, number>
 
 export const MIDTERM_WARNING_BELOW = 40
+export const lessonKey = (subject: string, lessonId: string) => `${subject}:${lessonId}`
 const DAY = 86_400_000
 
 export interface AcademyState {
@@ -33,6 +35,7 @@ export interface AcademyState {
   progress: Record<string, ProgressRow>
   sessions: SessionRow[]
   eggsLogs: EggsRow[]
+  lessons: Record<string, LessonRow>
   /** Nino's Kitchen Timer is armed (local until it is used up). */
   shield: boolean
 }
@@ -158,6 +161,8 @@ interface Ctx {
   logEggsRound: (r: { target: string; guessed: string; cluesUsed: number; multiplier: number; points: number; streak: number }) => void
   finishEggsGame: (g: { total: number; bestStreak: number }) => void
   resetProgress: () => void
+  lessonStep: (l: { subject: string; lessonId: string; beatsDone: number }) => void
+  lessonCheck: (l: { subject: string; lessonId: string; sister: string; passed: boolean }) => { firstPass: boolean; points: number; score: number }
   setPrefs: (p: Pick<ProfilePatch, 'voice_enabled' | 'sfx_enabled' | 'voice_volume' | 'voice_speed'>) => void
 }
 
@@ -169,6 +174,7 @@ export function AcademyProvider({ sync, initial, children }: { sync: SupabaseSyn
     progress: Object.fromEntries(initial.progress.map((p) => [progressKey(p.subject_id, p.question_id), p])),
     sessions: initial.sessions,
     eggsLogs: initial.eggsLogs,
+    lessons: Object.fromEntries((initial.lessons || []).map((l) => [lessonKey(l.subject_id, l.lesson_id), l])),
     shield: false,
   }))
   const ref = useRef(state)
@@ -179,7 +185,7 @@ export function AcademyProvider({ sync, initial, children }: { sync: SupabaseSyn
   // Keep an offline copy current (cheap, debounced).
   useEffect(() => {
     const t = setTimeout(
-      () => sync.cache({ profile: state.profile, progress: Object.values(state.progress), sessions: state.sessions, eggsLogs: state.eggsLogs }),
+      () => sync.cache({ profile: state.profile, progress: Object.values(state.progress), sessions: state.sessions, eggsLogs: state.eggsLogs, lessons: Object.values(state.lessons) }),
       500,
     )
     return () => clearTimeout(t)
@@ -322,11 +328,83 @@ export function AcademyProvider({ sync, initial, children }: { sync: SupabaseSyn
       progress: {},
       sessions: [],
       eggsLogs: [],
+      lessons: {},
       shield: false,
     })
     // Keep the current tutor selected after the wipe.
     sync.enqueueProfile({ preferred_sister: s.profile.preferred_sister })
   }, [commit, sync])
+
+  const lessonRow = (s: AcademyState, subject: string, lessonId: string): LessonRow =>
+    s.lessons[lessonKey(subject, lessonId)] || {
+      user_id: s.profile.user_id,
+      subject_id: subject,
+      lesson_id: lessonId,
+      beats_done: 0,
+      completed: false,
+      check_passed: false,
+      best_score: 0,
+      attempts: 0,
+      completed_at: null,
+      updated_at: new Date().toISOString(),
+    }
+
+  const lessonStep: Ctx['lessonStep'] = useCallback(
+    ({ subject, lessonId, beatsDone }) => {
+      const s = ref.current
+      const prev = lessonRow(s, subject, lessonId)
+      if (beatsDone <= prev.beats_done) return
+      const row: LessonRow = { ...prev, beats_done: beatsDone, updated_at: new Date().toISOString() }
+      sync.enqueueLesson(row)
+      commit({ ...s, lessons: { ...s.lessons, [lessonKey(subject, lessonId)]: row } })
+    },
+    [commit, sync],
+  )
+
+  const lessonCheck: Ctx['lessonCheck'] = useCallback(
+    ({ subject, lessonId, sister, passed }) => {
+      const s = ref.current
+      const prev = lessonRow(s, subject, lessonId)
+      const attempts = prev.attempts + 1
+      const score = passed ? (attempts === 1 ? 100 : attempts === 2 ? 80 : 60) : 0
+      const firstPass = passed && !prev.check_passed
+      const points = firstPass ? 25 : 0
+      const now = new Date().toISOString()
+      const row: LessonRow = {
+        ...prev,
+        attempts,
+        check_passed: prev.check_passed || passed,
+        completed: prev.completed || passed,
+        best_score: Math.max(prev.best_score, score),
+        completed_at: prev.completed_at || (passed ? now : null),
+        updated_at: now,
+      }
+      sync.enqueueLesson(row)
+      let next: AcademyState = { ...s, lessons: { ...s.lessons, [lessonKey(subject, lessonId)]: row } }
+      let patch: ProfilePatch | undefined
+      if (firstPass) {
+        patch = { exam_score: s.profile.exam_score + points, maruo_approval: clamp(s.profile.maruo_approval + 1, 0, 100), last_study_date: today() }
+        const session: SessionRow = {
+          id: newId(),
+          user_id: s.profile.user_id,
+          sister_id: sister,
+          subject_id: subject,
+          difficulty_tier: `lesson ${lessonId}`,
+          score_earned: points,
+          correct_answers: 1,
+          total_questions: 1,
+          maruo_delta: 1,
+          items_used: {},
+          completed_at: now,
+        }
+        sync.enqueueSession(session)
+        next = { ...next, sessions: [session, ...s.sessions].slice(0, 50), profile: { ...s.profile, ...patch } as Profile }
+      }
+      commit(next, patch)
+      return { firstPass, points, score }
+    },
+    [commit, sync],
+  )
 
   const setPrefs: Ctx['setPrefs'] = useCallback(
     (patch) => {
@@ -350,9 +428,11 @@ export function AcademyProvider({ sync, initial, children }: { sync: SupabaseSyn
       logEggsRound,
       finishEggsGame,
       resetProgress,
+      lessonStep,
+      lessonCheck,
       setPrefs,
     }),
-    [state, syncStatus, answer, finishSession, consumeItem, setPreferredSister, logEggsRound, finishEggsGame, resetProgress, setPrefs],
+    [state, syncStatus, answer, finishSession, consumeItem, setPreferredSister, logEggsRound, finishEggsGame, resetProgress, lessonStep, lessonCheck, setPrefs],
   )
   return <AcademyContext.Provider value={value}>{children}</AcademyContext.Provider>
 }

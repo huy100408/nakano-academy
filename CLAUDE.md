@@ -25,7 +25,9 @@ src/
   types/supabase.ts            generated: `supabase gen types typescript --project-id <ref>`
   data/sisters.js              the five tutors (theme colours, persona, dialogue lines)
   data/subjects/*.js           lesson content, one module per sister (30 questions, 12 flashcards, 6-step `lecture`, 3 egg rounds)
-  data/curriculum.js           MODULES, TIERS, QUESTION_INDEX, EGG_ROUNDS
+  data/curriculum.js           MODULES, TIERS, QUESTION_INDEX, EGG_ROUNDS (quiz/flashcard modules)
+  data/curriculum/             numbered courses (1.1, 2.5 …) per subject; format + widget catalog in its README.md
+  features/whiteboard/         WhiteboardStage (beats + voice + board notes + Check Board), SyllabusTree, widgets/ (interactive models)
   data/items.js                the five signature items
   components/                  Classroom, Stage, LessonDeck, Quiz, ReviewView, EggsView, ReportView, Sidebar (HUD)
   intro/                       launch sequence (YouTube embed + title card)
@@ -47,6 +49,7 @@ Project ref `eudaajneofcbjbommbnl`. Schema: `supabase/migrations/20261114000000_
 | `question_progress` | spaced repetition per question (SM-2 style ease/interval, `is_weak_spot`, `next_review_at`); unique on `(user_id, subject_id, question_id)` |
 | `study_sessions` | log of every finished run (`difficulty_tier`: easy, medium, hard, review, midterm_rescue) |
 | `scrambled_eggs_logs` | one row per Scrambled Eggs round |
+| `lesson_progress` | per numbered lesson: beats reached, completed, check passed, best score (100/80/60 by attempt), attempts; PK `(user_id, subject_id, lesson_id)` |
 
 Rules:
 - Every table has RLS enabled with owner-only policies, `(select auth.uid()) = user_id`, for authenticated users. `anon` has no table grants.
@@ -92,5 +95,7 @@ npm run build:site     # website + /learn/ → site-dist/ (what Pages deploys)
 npx tsc --noEmit       # type-check the TypeScript files
 npm run dist           # .dmg + .exe → release/
 ```
+
+Course rules: lessons live in `src/data/curriculum/*.js`; every lesson has 4–6 beats and a final `check` whose `expect` keys match its widget's value (see that README). Validate new content with a script like the one described there. Lesson ids are stored in `lesson_progress`, so never renumber shipped ids.
 
 Content rules: each `src/data/subjects/*.js` module must keep exactly 4 options per question, a valid `answer` index, a `tier` of easy/medium/hard and a `hint`. Question ids are stored in `question_progress`; **never renumber or reuse an id**, or users' review history attaches to the wrong question.

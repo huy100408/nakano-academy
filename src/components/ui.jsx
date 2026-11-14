@@ -60,14 +60,14 @@ export function Avatar({ s, size = 40, ring = false, className = '' }) {
 
 export function Segmented({ value, onChange, options }) {
   return (
-    <div className="no-drag inline-flex rounded-xl bg-ink/[.05] p-1">
+    <div className="no-drag scroll-thin inline-flex max-w-full overflow-x-auto rounded-xl bg-ink/[.05] p-1">
       {options.map(([k, label, Icon]) => {
         const on = k === value
         return (
           <button
             key={k}
             onClick={() => onChange(k)}
-            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition ${
+            className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-semibold transition ${
               on ? 'bg-white text-ink shadow-[0_1px_3px_rgb(0_0_0/.12)]' : 'text-muted hover:text-ink'
             }`}
           >

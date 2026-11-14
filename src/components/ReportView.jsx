@@ -71,7 +71,7 @@ function quotes(avg, approval) {
 }
 
 const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-const tierLabel = (t) => TIERS.find((x) => x.key === t)?.label || (t === 'midterm_rescue' ? 'Midterm Rescue' : t === 'review' ? 'Weak-spot review' : t)
+const tierLabel = (t) => TIERS.find((x) => x.key === t)?.label || (t === 'midterm_rescue' ? 'Midterm Rescue' : t === 'review' ? 'Weak-spot review' : t?.startsWith('lesson ') ? `Lesson ${t.slice(7)} check` : t)
 
 export default function ReportView() {
   const { state, mastery, baseline } = useAcademy()

@@ -6,7 +6,7 @@ import { useAcademy } from '../state/useAcademy'
 import { Eyebrow, toast } from './ui.jsx'
 
 /** Live waveform of whatever a tutor is saying. */
-function Waveform({ color, active }) {
+export function Waveform({ color, active }) {
   const canvas = useRef(null)
   useEffect(() => {
     let raf

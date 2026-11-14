@@ -182,6 +182,7 @@ function DemoGate({ children }: { children: ReactNode }) {
       progress: [],
       sessions: [],
       eggsLogs: [],
+      lessons: [],
     }),
     [user],
   )
