@@ -149,9 +149,13 @@ export type Database = {
           preferred_sister: string
           scrambled_eggs_best_streak: number
           scrambled_eggs_high_score: number
+          sfx_enabled: boolean
           study_streak: number
           updated_at: string
           user_id: string
+          voice_enabled: boolean
+          voice_speed: number
+          voice_volume: number
         }
         Insert: {
           avatar_url?: string | null
@@ -167,9 +171,13 @@ export type Database = {
           preferred_sister?: string
           scrambled_eggs_best_streak?: number
           scrambled_eggs_high_score?: number
+          sfx_enabled?: boolean
           study_streak?: number
           updated_at?: string
           user_id: string
+          voice_enabled?: boolean
+          voice_speed?: number
+          voice_volume?: number
         }
         Update: {
           avatar_url?: string | null
@@ -185,9 +193,13 @@ export type Database = {
           preferred_sister?: string
           scrambled_eggs_best_streak?: number
           scrambled_eggs_high_score?: number
+          sfx_enabled?: boolean
           study_streak?: number
           updated_at?: string
           user_id?: string
+          voice_enabled?: boolean
+          voice_speed?: number
+          voice_volume?: number
         }
         Relationships: []
       }

@@ -104,7 +104,7 @@ function LoginScreen({ onSignIn, waiting, error, onCancel }: { onSignIn: () => v
           ) : (
             <button
               onClick={onSignIn}
-              className="flex min-h-[52px] w-full items-center justify-center gap-3 rounded-xl border border-line bg-white px-5 text-[15.5px] font-bold shadow-[0_1px_2px_rgb(0_0_0/.06)] transition hover:bg-ink/[.02] active:scale-[.99]"
+              className="btn-3d flex min-h-[52px] w-full items-center justify-center gap-3 rounded-xl border border-line bg-white px-5 text-[15.5px] font-bold shadow-[0_1px_2px_rgb(0_0_0/.06)] transition hover:bg-ink/[.02] active:scale-[.99]"
             >
               <GoogleMark /> Sign in with Google
             </button>
@@ -178,7 +178,7 @@ function DemoGate({ children }: { children: ReactNode }) {
   const sync = useMemo(() => new SupabaseSync(user.id, { demo: true }), [user.id])
   const initial: CloudSnapshot = useMemo(
     () => ({
-      profile: { user_id: user.id, email: user.email ?? null, full_name: 'Demo Student', avatar_url: null, updated_at: new Date().toISOString(), ...DEFAULT_PROFILE_FIELDS },
+      profile: { user_id: user.id, email: user.email ?? null, full_name: 'Demo Student', avatar_url: null, updated_at: new Date().toISOString(), voice_enabled: false, sfx_enabled: true, voice_volume: 0.9, voice_speed: 1, ...DEFAULT_PROFILE_FIELDS },
       progress: [],
       sessions: [],
       eggsLogs: [],

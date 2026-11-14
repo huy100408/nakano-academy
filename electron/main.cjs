@@ -66,62 +66,6 @@ ipcMain.handle('auth:open-external', (_e, url) => {
   return false
 })
 
-/* ── Settings (kept in the OS user-data folder, never in the repo) ── */
-const settingsFile = () => path.join(app.getPath('userData'), 'settings.json')
-const DEFAULT_SETTINGS = {
-  voiceEnabled: false,
-  fishApiKey: '',
-  fishModel: 's1',
-  voices: { ichika: '', nino: '', miku: '', yotsuba: '', itsuki: '' },
-}
-function readSettings() {
-  try {
-    const raw = JSON.parse(fs.readFileSync(settingsFile(), 'utf8'))
-    return { ...DEFAULT_SETTINGS, ...raw, voices: { ...DEFAULT_SETTINGS.voices, ...(raw.voices || {}) } }
-  } catch {
-    return { ...DEFAULT_SETTINGS, fishApiKey: process.env.FISH_AUDIO_API_KEY || '' }
-  }
-}
-function writeSettings(next) {
-  fs.mkdirSync(path.dirname(settingsFile()), { recursive: true })
-  fs.writeFileSync(settingsFile(), JSON.stringify(next, null, 2), { mode: 0o600 })
-}
-// The renderer never receives the raw key, only whether one is set.
-const publicSettings = (s) => ({ ...s, fishApiKey: undefined, hasApiKey: Boolean(s.fishApiKey) })
-
-ipcMain.handle('settings:get', () => publicSettings(readSettings()))
-ipcMain.handle('settings:set', (_e, patch) => {
-  const cur = readSettings()
-  const next = { ...cur, ...patch, voices: { ...cur.voices, ...(patch.voices || {}) } }
-  if (patch.fishApiKey === undefined) next.fishApiKey = cur.fishApiKey
-  writeSettings(next)
-  return publicSettings(next)
-})
-
-/* ── Fish Audio TTS (https://docs.fish.audio) ──
-   Runs in the main process so the API key stays out of the page and CORS is not an issue. */
-ipcMain.handle('voice:speak', async (_e, { text, sister, force }) => {
-  const s = readSettings()
-  if (!s.voiceEnabled && !force) return { ok: false, error: 'Voice is turned off.' }
-  if (!s.fishApiKey) return { ok: false, error: 'No Fish Audio API key set.' }
-  const referenceId = s.voices[sister]
-  try {
-    const res = await fetch('https://api.fish.audio/v1/tts', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${s.fishApiKey}`,
-        'Content-Type': 'application/json',
-        model: s.fishModel || 's1',
-      },
-      body: JSON.stringify({ text, format: 'mp3', ...(referenceId ? { reference_id: referenceId } : {}) }),
-    })
-    if (!res.ok) return { ok: false, error: `Fish Audio ${res.status}: ${(await res.text()).slice(0, 200)}` }
-    return { ok: true, audio: new Uint8Array(await res.arrayBuffer()), mime: 'audio/mpeg' }
-  } catch (err) {
-    return { ok: false, error: String(err.message || err) }
-  }
-})
-
 /* ── Window ── */
 function createWindow() {
   const win = new BrowserWindow({

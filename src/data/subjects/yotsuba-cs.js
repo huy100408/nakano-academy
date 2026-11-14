@@ -103,6 +103,20 @@ export default {
       takeaway: 'DNS finds the address, TCP/IP delivers the packets in order, encryption keeps them private, and you are the defense against phishing.',
       hook: 'Packets are relay runners taking different streets! TCP is the coach at the finish who lines them up by bib number and sends someone back for whoever got lost!',
     },
+    {
+      id: 'cs-fc-11',
+      front: 'Logic Gates: AND, OR, XOR, NAND',
+      back: 'AND: 1 only if both inputs are 1\nOR: 1 if at least one input is 1\nXOR: 1 if exactly one input is 1 (the inputs differ)\nNAND: NOT AND, so 0 only if both inputs are 1\nInputs 00 → AND 0 · OR 0 · XOR 0 · NAND 1\nInputs 01 or 10 → AND 0 · OR 1 · XOR 1 · NAND 1\nInputs 11 → AND 1 · OR 1 · XOR 0 · NAND 0',
+      takeaway: 'XOR asks "are the inputs different?", and NAND is AND with the output flipped, so it outputs 0 only when both inputs are 1.',
+      hook: 'XOR is a baton handoff: exactly ONE runner holds it, never both and never nobody! NAND is the referee who only blows the whistle to stop when BOTH runners show up! Shishishi!',
+    },
+    {
+      id: 'cs-fc-12',
+      front: 'TCP vs UDP & HTTP Status Codes',
+      back: 'TCP: sets up a connection, numbers packets, resends lost ones. Reliable but slower (web pages, email, file downloads).\nUDP: just sends, never resends. Fast, but packets can be lost (video calls, online games, live streams).\nHTTP runs on top of TCP. Status codes:\n200 OK · 301 Moved · 404 Not Found · 500 Server Error\n2xx success · 4xx the request was wrong · 5xx the server broke',
+      takeaway: "Use TCP when every byte matters and UDP when speed matters more than a few lost packets; a 4xx code is the client's mistake, a 5xx code is the server's.",
+      hook: 'TCP is the careful relay where every baton gets checked at the line! UDP is the sprint where you never look back! And 404 means the runner showed up at a track that does not exist!',
+    },
   ],
 
   questions: [
@@ -358,16 +372,88 @@ export default {
       explain: 'Careful, it looks like n log n, but the inner loop shrinks! It runs n laps, then n/2, then n/4, and so on. n + n/2 + n/4 + … adds up to less than 2n, and dropping the constant gives O(n)! The outer loop runs log n times, but the laps keep getting shorter. Endurance trick question, cleared!',
       hint: 'Instead of multiplying the two loops, add up exactly how much work each outer lap does!',
     },
+
+    /* ─────────── Added questions (append only, never renumber) ─────────── */
+    {
+      id: 'cs-e-09',
+      tier: 'easy',
+      q: 'Each hex digit stands for exactly 4 bits. What is the binary number 1011 0110₂ written in hexadecimal?',
+      options: ['A6', '182', 'B6', '6B'],
+      answer: 2,
+      explain: 'Split it into two four-bit teams! 1011 is 8 + 2 + 1 = 11, which is B in hex, and 0110 is 4 + 2 = 6. Put the teams side by side and you get B6! 182 is the decimal value, not the hex one, so watch which finish line you are running to. Shishishi!',
+      hint: 'Chop the bits into groups of four, then turn each group into one hex digit from 0 to F!',
+    },
+    {
+      id: 'cs-e-10',
+      tier: 'easy',
+      q: 'Both inputs to a logic gate are 1 (A = 1, B = 1). What do an XOR gate and a NAND gate output?',
+      options: ['XOR: 1, NAND: 1', 'XOR: 0, NAND: 0', 'XOR: 1, NAND: 0', 'XOR: 0, NAND: 1'],
+      answer: 1,
+      explain: 'XOR outputs 1 only when the inputs are DIFFERENT, and 1 and 1 match, so XOR outputs 0! NAND means NOT AND: 1 AND 1 is 1, and the NOT flips it to 0. Both inputs being 1 is actually the ONLY case where NAND outputs 0. Two zeros, perfect handoff!',
+      hint: 'For NAND, work out plain AND first and then flip it; for XOR, ask whether the two inputs are different!',
+    },
+    {
+      id: 'cs-m-09',
+      tier: 'medium',
+      q: 'A live video call loses a packet. Showing the next frame on time matters more than waiting for the lost one. Which protocol fits best?',
+      options: [
+        'TCP, because it guarantees every packet arrives in order',
+        'DNS, because it finds the fastest route for each packet',
+        'HTTP, because a 200 status code means no packets were lost',
+        'UDP, because it keeps sending without stopping to resend lost packets',
+      ],
+      answer: 3,
+      explain: 'TCP would pause to resend the lost packet, and in a live call that old frame shows up too late to matter! UDP just keeps sending, so you get a tiny glitch instead of a frozen screen. DNS only looks up addresses, and HTTP status codes describe web requests, not lost packets. Pick the right runner for the race!',
+      hint: 'Ask whether resending an old packet actually helps when the call is happening live!',
+    },
+    {
+      id: 'cs-m-10',
+      tier: 'medium',
+      q: 'You need to find one student ID among 1,000,000 records. Roughly how many steps does each structure need?',
+      options: [
+        'Unsorted list: up to 1,000,000 · Balanced tree: about 20 · Hash map: about 1',
+        'Unsorted list: up to 1,000,000 · Balanced tree: about 500,000 · Hash map: about 20',
+        'Unsorted list: about 20 · Balanced tree: about 20 · Hash map: about 1',
+        'Unsorted list: up to 1,000,000 · Balanced tree: about 1,000 · Hash map: about 1',
+      ],
+      answer: 0,
+      explain: 'An unsorted list has no shortcuts, so in the worst case you check every record: O(n)! A balanced tree rules out about half of what is left at each step, and 2²⁰ is about 1,000,000, so it takes about 20 steps: O(log n). A hash map turns the key straight into a location, so on average it is about 1 step: O(1). Right equipment, record time!',
+      hint: 'Think about how many records each structure can rule out with a single step!',
+    },
+    {
+      id: 'cs-h-09',
+      tier: 'hard',
+      q: 'This is the merge step of merge sort. What is printed?',
+      code: 'def merge(a, b):\n    out = []\n    i = j = checks = 0\n    while i < len(a) and j < len(b):\n        checks += 1\n        if a[i] <= b[j]:\n            out.append(a[i])\n            i += 1\n        else:\n            out.append(b[j])\n            j += 1\n    return out + a[i:] + b[j:], checks\n\nresult, checks = merge([3, 27, 38, 43], [5, 9, 10, 82])\nprint(checks)',
+      options: ['8', '7', '4', '16'],
+      answer: 1,
+      explain: 'Each check sends one runner to the output: 3, 5, 9, 10, 27, 38, 43 takes 7 checks, and then list a is empty, so the loop stops and 82 joins the end without any check! Merging costs about n checks per level, and halving the list over and over gives about log n levels. That is why merge sort is O(n log n), way faster than the O(n²) sorts on big lists! Ganbarou!',
+      hint: 'Trace i and j one check at a time, and notice what happens to the loop as soon as one list runs out!',
+    },
+    {
+      id: 'cs-h-10',
+      tier: 'hard',
+      q: 'All five Nakano sisters want a private channel with every other sister. With symmetric encryption, each pair shares its own secret key. With public-key encryption, each sister publishes a public key and keeps a private key. How many keys does each system need?',
+      options: [
+        'Symmetric: 20 shared keys · Public-key: 5 key pairs',
+        'Symmetric: 5 shared keys · Public-key: 10 key pairs',
+        'Symmetric: 10 shared keys · Public-key: 5 key pairs',
+        'Symmetric: 25 shared keys · Public-key: 10 key pairs',
+      ],
+      answer: 2,
+      explain: 'Symmetric means the same key locks AND unlocks, so every pair needs its own. Each sister pairs with 4 others, so 5 × 4 = 20, but that counts every pair twice (Ichika with Nino is the same pair as Nino with Ichika), so it is 20 ÷ 2 = 10 shared keys! With public-key encryption, anyone locks a message with her public key and only her private key unlocks it, so each sister needs just ONE key pair, 5 in total. That is why public-key encryption is how you start a secure connection with a stranger on the internet!',
+      hint: 'Count each pair of sisters only once, then think about whether a public key ever needs to stay secret!',
+    },
   ],
 
   eggs: [
     {
-      academic: `"Regarding the history question: the Treaty of Versailles was signed in 1919. Incidentally, 1919 in binary is 11101111111. That is... entirely relevant, I assure you."`,
+      academic: `"Regarding the history question: the Treaty of Versailles was signed in 1919. Incidentally, 1919 in binary is 11101111111, which fits in eleven bits. A computer would store it in two bytes. That is... entirely relevant, I assure you."`,
       slip: `She opens with a stiff "I shall now begin the lesson," then a "Shishishi!" escapes and she clamps both hands over her mouth.`,
       tell: 'She bounces on her toes the entire time and keeps glancing at a stopwatch, as if timing her own answer.',
     },
     {
-      academic: `"To balance a chemical equation, one simply repeats: adjust a coefficient, recount the atoms, and stop once both sides match. It is a while loop with a stopping condition. Quite elegant, is it not?"`,
+      academic: `"To balance a chemical equation, one simply repeats: adjust a coefficient, recount the atoms, and stop once both sides match. In code, that is a while loop with a stopping condition. Quite elegant, is it not?"`,
       slip: `She tries to say "Please proceed carefully," but it comes out as "Please proceed carefully!!! Ganbarou!!!" with far too many exclamation marks.`,
       tell: 'Offered a meat bun, she does not eat it. Instead she volunteers to sprint to the store and buy more for everyone.',
     },
@@ -375,6 +461,46 @@ export default {
       academic: `"This poem has a recursive structure. Each stanza hands off to the next, and the final line is the base case. Without it, the poem would overflow the call stack."`,
       slip: `When thanked with a polite "Thank you, Itsuki," she shouts "No problem! Let's do our best!" and only then remembers to bow.`,
       tell: 'She keeps tilting her head as if balancing a giant ribbon that is not there, and her star hairpins are clipped on upside down.',
+    },
+  ],
+
+  /* Spoken lesson, read aloud by text-to-speech: code ideas are written in words. */
+  lecture: [
+    {
+      title: 'Binary: counting in bits',
+      say: 'Okay team, warm-up lap! Computers store everything as bits, tiny switches that are either zero or one. In binary, each place is worth double the place to its right: one, two, four, eight, sixteen, and so on. So the binary number one one zero one means eight plus four plus one, which is thirteen, shishishi!',
+      simpler: 'Binary only uses zero and one. Each spot is worth twice the spot to its right, and you add up the spots that hold a one.',
+      example: 'One byte is eight bits, so it can hold two to the eighth power, which is 256 different values, from zero up to 255. And one hexadecimal digit, from zero up to F, packs exactly four bits.',
+    },
+    {
+      title: 'Boolean logic and gates',
+      say: 'Next leg: Boolean logic, where every answer is just true or false! AND is true only when both sides are true, OR is true when at least one side is true, and NOT flips true into false. XOR is true when exactly one side is true, and NAND is the opposite of AND, so it is false only when both sides are true. Logic gates are tiny circuits that do these jobs billions of times every second, ganbarou!',
+      simpler: 'AND needs both, OR needs at least one, and NOT flips the answer. XOR means the two inputs are different.',
+      example: 'If it is sunny AND I have my running shoes, I go for a run. If it is sunny but my shoes are missing, AND gives false, so I stay home and stretch instead!',
+    },
+    {
+      title: 'Loops and tracing',
+      say: 'Now the relay laps: loops! A loop repeats the same steps, and tracing means running the code by hand, writing down every variable after every lap. If x starts at zero and the loop does x equals x plus one five times, you write one, two, three, four, five, one value per lap. And watch the finish line, because a range from one to five stops before five, so it only runs four laps!',
+      simpler: 'A loop repeats steps. Tracing means keeping a little table of every variable and updating it after each lap.',
+      example: 'Start a total at zero, then loop over one, two, three and four, adding each number to the total. The table goes one, three, six, ten, so the final total is ten!',
+    },
+    {
+      title: 'Big O and searching',
+      say: 'Speed training time: Big O! Big O tells you how the work grows when the input gets bigger. Linear search checks every item one by one, which is Big O of n, but binary search cuts a sorted list in half every step, which is Big O of log n. A loop inside another loop over the same list is usually Big O of n squared, so watch out for those!',
+      simpler: 'Big O measures how fast the work grows as the list gets longer. Cutting the list in half each step is way faster than checking every single item.',
+      example: 'To find one name in a sorted list of 1,000 names, linear search might check all 1,000, but binary search needs only about 10 checks. Merge sort, which splits the list, sorts each half, and merges them back, runs in Big O of n log n.',
+    },
+    {
+      title: 'Data structures',
+      say: 'Every team needs the right equipment, and data structures are how we organize data! A stack is last in, first out, like a pile of gym mats, and a queue is first in, first out, like the line at the water fountain. A hash map, which Python calls a dictionary, jumps straight from a key to its value in about one step on average, which is Big O of one. A balanced tree keeps everything sorted, so finding something takes about Big O of log n steps.',
+      simpler: 'Stacks hand back the newest item first, queues hand back the oldest item first, and hash maps find things by name almost instantly.',
+      example: 'Looking up one student ID among a million records takes about one step in a hash map, about twenty steps in a balanced tree, and up to a million steps in an unsorted list.',
+    },
+    {
+      title: 'Networking and security',
+      say: 'Final lap: the internet! Data is split into packets, DNS turns a name like example dot com into an IP address, and TCP numbers the packets, puts them back in order, and resends any that get lost, while UDP skips the resending to stay fast. For security, symmetric encryption uses one shared secret key, while public key encryption lets anyone lock a message with your public key and only your private key can unlock it. Ganbarou, we crossed the finish line together!',
+      simpler: 'Messages travel in small packets, TCP makes sure they all arrive in order, and encryption scrambles them so only the right person can read them.',
+      example: 'To send Itsuki a secret note, lock it with her public key. Even if someone grabs the packets along the way, only her private key can open it!',
     },
   ],
 }

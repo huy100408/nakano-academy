@@ -113,6 +113,20 @@ export default {
       takeaway: 'Always convert grams to moles before using the coefficients of a balanced equation.',
       hook: 'A mole is a counting unit, like a dozen: 6.02 × 10²³ particles. I would gladly accept a mole of meat buns. For research purposes.',
     },
+    {
+      id: 'science-fc-11',
+      front: 'Balancing Chemical Equations',
+      back: 'Atoms are conserved: the same number of each element on both sides\nChange coefficients only, never subscripts\nUsual order: C → H → O last (elements that appear alone go last)\nCoefficient ratio = mole ratio, e.g. 2H₂ + O₂ → 2H₂O',
+      takeaway: 'Balance by changing coefficients only; changing a subscript changes the substance itself.',
+      hook: 'Changing a subscript is like replacing the curry with stew and calling it the same recipe. Please adjust the number of servings, the coefficients, instead.',
+    },
+    {
+      id: 'science-fc-12',
+      front: 'Ionic vs. Covalent Bonds',
+      back: 'Ionic: metal + nonmetal, electrons transferred → ions (Na⁺ Cl⁻)\nHigh melting points; conducts when melted or dissolved\nCovalent: nonmetals share electron pairs (H₂O, CH₄, CO₂)\nElectronegativity difference: ≈ 0 nonpolar · ≈ 0.4–1.7 polar · > ≈ 1.7 ionic',
+      takeaway: 'Electrons are transferred in ionic bonds and shared in covalent bonds; the electronegativity difference tells you which to expect.',
+      hook: 'Ionic bonding is sodium handing its electron to chlorine outright, like giving away a whole meat bun. Covalent bonding is two atoms sharing one bun. I would, naturally, prefer to keep mine.',
+    },
   ],
 
   questions: [
@@ -356,6 +370,71 @@ export default {
       explain: "A 1,000 bp molecule has 2 × 1,000 = 2,000 bases. By Chargaff's rule A = T, so A + T = 30% + 30% = 60%, leaving 40% for G + C. G = C = 20%, and 20% × 2,000 = 400 guanine bases.",
       hint: 'Double-stranded means two bases per base pair, and every adenine needs a partner.',
     },
+
+    /* ───────────── ADDED · Easy ───────────── */
+    {
+      id: 'science-e-09',
+      tier: 'easy',
+      q: 'Which of these compounds is held together by ionic bonds?',
+      options: ['Water (H₂O)', 'Sodium chloride (NaCl)', 'Methane (CH₄)', 'Carbon dioxide (CO₂)'],
+      answer: 1,
+      explain: 'Ionic bonds form when a metal transfers electrons to a nonmetal. Sodium gives one electron to chlorine, making Na⁺ and Cl⁻ ions that are held together by electrostatic attraction. Water, methane and carbon dioxide contain only nonmetals, which share electrons in covalent bonds. Yes, table salt is ionic; I think of it every time I season my rice.',
+      hint: 'Ask whether each compound joins a metal to a nonmetal, or only nonmetals to one another.',
+    },
+    {
+      id: 'science-e-10',
+      tier: 'easy',
+      q: 'What is the molar mass of carbon dioxide, CO₂?',
+      code: 'C = 12.0 g/mol, O = 16.0 g/mol',
+      options: ['28.0 g/mol', '32.0 g/mol', '56.0 g/mol', '44.0 g/mol'],
+      answer: 3,
+      explain: 'CO₂ contains one carbon atom and two oxygen atoms, so its molar mass is 12.0 g/mol + 2 × 16.0 g/mol = 44.0 g/mol. An answer of 28.0 g/mol means you forgot the subscript 2, which describes carbon monoxide instead. Please read every subscript as carefully as you would read a recipe.',
+      hint: 'Count how many atoms of each element the formula contains before adding their masses.',
+    },
+
+    /* ───────────── ADDED · Medium ───────────── */
+    {
+      id: 'science-m-09',
+      tier: 'medium',
+      q: 'Which of these elements has the highest first ionization energy?',
+      code: 'Period 3: Na, Mg, … Cl\nGroup 1: Na, K',
+      options: ['Chlorine (Cl)', 'Sodium (Na)', 'Potassium (K)', 'Magnesium (Mg)'],
+      answer: 0,
+      explain: 'First ionization energy is the energy needed to remove one outer electron, measured in kJ/mol. Across period 3 the nuclear charge rises and the radius shrinks, so chlorine holds its electrons far more tightly than sodium or magnesium. Down group 1 the outer electron sits in a new, more shielded shell, so potassium is the lowest of all. Approximate values: Cl 1,251 kJ/mol, Mg 738 kJ/mol, Na 496 kJ/mol, K 419 kJ/mol.',
+      hint: 'Recall how ionization energy changes across a period and down a group, then locate each element on the table.',
+    },
+    {
+      id: 'science-m-10',
+      tier: 'medium',
+      q: 'Two students stand at rest on frictionless ice and push off each other. The 50 kg student slides away at 2.0 m/s. How fast does the 40 kg student move?',
+      code: 'm₁ = 50 kg, v₁ = 2.0 m/s\nm₂ = 40 kg, v₂ = ?',
+      options: ['2.0 m/s', '1.6 m/s', '2.5 m/s', '0 m/s'],
+      answer: 2,
+      explain: 'Both students start at rest, so the total momentum is 0 kg·m/s before and after the push. The 50 kg student carries 50 kg × 2.0 m/s = 100 kg·m/s in one direction, so the 40 kg student must carry 100 kg·m/s in the opposite direction. v = 100 kg·m/s ÷ 40 kg = 2.5 m/s, so the lighter student moves faster.',
+      hint: 'The total momentum before the push is zero; consider what that requires afterwards.',
+    },
+
+    /* ───────────── ADDED · Hard ───────────── */
+    {
+      id: 'science-h-09',
+      tier: 'hard',
+      q: 'Balance the complete combustion of propane. How many moles of oxygen gas are needed to burn 2.0 mol of propane?',
+      code: '__C₃H₈ + __O₂ → __CO₂ + __H₂O',
+      options: ['10 mol', '5.0 mol', '20 mol', '6.0 mol'],
+      answer: 0,
+      explain: 'Balance carbon first with 3 CO₂, then hydrogen: 8 H atoms need 4 H₂O. The right side now has 3 × 2 + 4 × 1 = 10 oxygen atoms, so we need 5 O₂, giving C₃H₈ + 5O₂ → 3CO₂ + 4H₂O. The ratio is 1 mol C₃H₈ : 5 mol O₂, so 2.0 mol × 5 = 10 mol O₂. 20 mol counts oxygen atoms, not O₂ molecules; please keep them distinct.',
+      hint: 'Balance the equation completely first, then use the coefficients as a mole ratio.',
+    },
+    {
+      id: 'science-h-10',
+      tier: 'hard',
+      q: 'Red–green colour blindness is an X-linked recessive trait. A carrier mother and a father with normal vision have a son. What is the probability that the son is colour-blind?',
+      code: 'Mother: XᴮXᵇ (carrier)\nFather: XᴮY (normal vision)',
+      options: ['1/4', '1/2', '0', '3/4'],
+      answer: 1,
+      explain: 'A son always receives the Y chromosome from his father, so his only X chromosome comes from his mother. She passes on Xᵇ half the time, so P(son is XᵇY) = 1/2. 1/4 is the chance that any child is a colour-blind son, before we know the child is a boy. Please read the condition in the question carefully; it changes the answer.',
+      hint: 'Consider which parent gives a son his only X chromosome.',
+    },
   ],
 
   eggs: [
@@ -373,6 +452,46 @@ export default {
       academic: '"How many values can 8 bits store? 2⁸ = 256 values. It has no physical unit, which I find slightly uncomfortable."',
       slip: 'When teased about ordering seconds, her polite "I beg your pardon?" snaps into "I am a growing girl! That is basic biology!"',
       tell: 'Her notebook has perfectly ruled headings and a small curry stain on the cover, which she keeps hiding with one hand.',
+    },
+  ],
+
+  // Spoken lesson, read aloud by text-to-speech: formulas and units are written out in words.
+  lecture: [
+    {
+      title: 'Method and Units',
+      say: 'Good day. Before any formula, we begin with the scientific method: we observe, ask a question, form a hypothesis, test it with a fair experiment, and draw a conclusion from the data. Every measurement in that experiment needs a unit, such as metres, kilograms or seconds. A number without a unit is incomplete, and I will not accept it.',
+      simpler: 'Ask a question, test it fairly, and let the results decide. And always write the unit next to the number.',
+      example: 'To test whether plants grow taller with more light, change only the light, keep the water the same, and measure the height in centimetres each day. Five centimetres is an answer; five on its own is not.',
+    },
+    {
+      title: 'Cells',
+      say: 'All living things are made of cells, the smallest units of life. Plant and animal cells both have a nucleus, which holds the DNA, a cell membrane, which controls what enters and leaves, and mitochondria, which release energy. Plant cells also have a cell wall and chloroplasts, where photosynthesis takes place.',
+      simpler: 'A cell is the smallest living building block. The nucleus is the control centre, and the mitochondria are the power stations.',
+      example: 'A leaf cell is green because its chloroplasts contain chlorophyll, while a cell from your cheek has no chloroplasts at all. Think of a cell as a school kitchen: the nucleus keeps the recipe book, and the mitochondria do the cooking.',
+    },
+    {
+      title: 'Energy in Living Things',
+      say: 'Living things need a steady supply of energy. In photosynthesis, plants use light to turn carbon dioxide and water into glucose and oxygen. In cellular respiration, cells break that glucose down with oxygen to release energy as ATP, giving back carbon dioxide and water. Each process uses the products of the other.',
+      simpler: 'Plants make food from sunlight, and cells burn that food for energy. Breathing in oxygen and breathing out carbon dioxide is part of the same cycle.',
+      example: 'Six carbon dioxide plus six H two O, with light, makes one glucose plus six O two. That is why one meat bun keeps me going all morning: respiration releases the energy stored in its glucose. ...It is a perfectly scientific example.',
+    },
+    {
+      title: "Newton's Laws",
+      say: 'First, an object keeps its velocity unless a net force acts on it; we call this inertia. Second, force equals mass times acceleration, and force is measured in newtons. Third, every force has an equal and opposite partner force. Please always find the net force before you calculate anything else.',
+      simpler: 'Things keep doing what they are doing until something pushes or pulls them. A bigger push gives a bigger acceleration, and a heavier object needs a bigger push.',
+      example: 'A four kilogram cart accelerating at two point five metres per second squared needs a net force of four times two point five, which is ten newtons. A heavier lunch tray needs a greater push. That is physics, not a remark about my tray.',
+    },
+    {
+      title: 'Energy and Circuits',
+      say: 'Energy is never created or destroyed, only transferred from one form to another. Kinetic energy equals one half times mass times velocity squared, and potential energy equals mass times nine point eight metres per second squared times height, both measured in joules. In a circuit, voltage equals current times resistance, so a larger voltage pushes more current through the same resistor.',
+      simpler: 'Energy changes form, but the total stays the same. In a circuit, the battery pushes, the resistor resists, and the current is how much charge flows.',
+      example: 'A current of three amperes through a four ohm resistor needs three times four, which is twelve volts. Three plates of four meat buns also make twelve, although I am not suggesting anyone eat them all at once.',
+    },
+    {
+      title: 'Atoms and Reactions',
+      say: 'Every atom has protons and neutrons in its nucleus, with electrons around it, and the number of protons is the atomic number. In a chemical reaction, atoms are rearranged, never created or destroyed, so a balanced equation has the same number of each atom on both sides. We count atoms in moles, and one mole is about six point zero two times ten to the power of twenty-three particles.',
+      simpler: 'Atoms are the building blocks of matter, and a reaction only rearranges them. Whatever atoms you start with, you must finish with, like a recipe where nothing vanishes from the bowl.',
+      example: 'Two H two plus O two makes two H two O: four hydrogen atoms and two oxygen atoms on each side, so it is balanced. Water has a molar mass of eighteen grams per mole, so eighteen grams of water is exactly one mole.',
     },
   ],
 }

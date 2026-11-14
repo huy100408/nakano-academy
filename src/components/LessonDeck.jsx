@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft, ArrowRight, Lightbulb, RotateCw, Sparkles } from 'lucide-react'
 import { MODULES } from '../data/curriculum.js'
 import { Eyebrow, Kbd } from './ui.jsx'
+import { playPop } from '../services/sfxEngine'
 
 export default function LessonDeck({ s, say }) {
   const cards = MODULES[s.subj].flashcards
@@ -15,6 +16,7 @@ export default function LessonDeck({ s, say }) {
     say('teaching')
   }
   const toggle = () => {
+    playPop()
     setFlip((f) => !f)
     if (!flip) say('teaching', card.hook)
   }

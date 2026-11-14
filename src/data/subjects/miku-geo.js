@@ -113,6 +113,20 @@ export default {
       takeaway: 'Factories locate where total costs are lowest, and governments use EPZs to change that math.',
       hook: "...Smelt the ore at the mine, so you carry less. Bottle the matcha soda near the customers... water is heavy. That's just good logistics.",
     },
+    {
+      id: 'geo-fc-11',
+      front: 'Diffusion Types: Relocation, Contagious, Hierarchical, Stimulus',
+      back: "Relocation: people move and carry the trait with them (Irish Catholicism arriving in Boston)\nContagious: spreads to nearby people, neighbor to neighbor, like a virus (a video shared friend to friend)\nHierarchical: jumps between large or powerful nodes first, then trickles down (fashion from global cities to small towns)\nReverse hierarchical: starts in small places and moves up (Walmart, hip-hop)\nStimulus: the idea spreads but the trait is changed (Sequoyah's Cherokee writing system)\nDistance decay: the farther from the hearth, the weaker the adoption",
+      takeaway: 'First ask whether people moved (relocation); if not, ask whether the trait spread by nearness, by importance, or only as an idea that changed.',
+      hook: "...Portuguese traders carrying muskets to Tanegashima is relocation. Daimyo adopting them first, then their armies, is hierarchical. Hearing that a rival uses signal fires and inventing your own code... that's stimulus. The idea travels. The form changes.",
+    },
+    {
+      id: 'geo-fc-12',
+      front: 'State Morphology: Five Shapes',
+      back: "Compact: roughly round, the capital can reach every border easily (Poland, Zimbabwe)\nElongated: long and thin, the far ends are hard to connect (Chile, Vietnam, Norway)\nFragmented: split into pieces by water or other states (Indonesia, the Philippines)\nProrupted: compact core with one long extension (Thailand, Namibia's Caprivi Strip)\nPerforated: completely surrounds another state (South Africa around Lesotho, Italy around San Marino)\nShape affects transport, defense, and national unity",
+      takeaway: 'Compact shapes help centripetal forces; elongated and fragmented shapes make communication, defense, and unity harder.',
+      hook: "...Compact is a round castle: the lord reaches every wall quickly. Elongated is one long mountain road, easy to cut in half. Fragmented is loyal islands you can only reach by ship. Perforated is someone else's fort sitting inside your lands.",
+    },
   ],
 
   questions: [
@@ -422,23 +436,139 @@ export default {
       explain: "...HDI has three parts: health, education, and income. A wins only income, while B wins health and education by a lot, so B likely ranks higher overall. For GII, lower means more equal, so B's 0.08 beats A's 0.45. Thinking HDI is mostly about income is the trap... money alone doesn't win the campaign.",
       hint: "...Count how many of HDI's three ingredients each country wins.",
     },
+
+    /* ───────────── ADDED · append new questions below (never renumber) ───────────── */
+    {
+      id: 'geo-e-09',
+      tier: 'easy',
+      q: 'Chile stretches about 4,300 km from north to south but averages only about 175 km from east to west. Which term best describes the shape of Chile?',
+      options: ['Compact', 'Elongated', 'Prorupted', 'Fragmented'],
+      answer: 1,
+      explain: "...Long and thin is elongated, and Chile's two ends are thousands of kilometers apart, which makes transport and national unity harder. Prorupted means a compact core with one long extension, like Thailand's southern strip, not a whole country that is all strip. ...Defending Chile is like guarding one endless mountain road. Reinforcements take a long time to arrive.",
+      hint: '...Compare the length to the width.',
+    },
+    {
+      id: 'geo-e-10',
+      tier: 'easy',
+      q: 'In the 1820s, Sequoyah, a Cherokee man, saw English speakers reading and writing. He could not read English, but he created an entirely new set of symbols to write the Cherokee language. Which type of diffusion does this best illustrate?',
+      options: ['Relocation diffusion', 'Contagious diffusion', 'Hierarchical diffusion', 'Stimulus diffusion'],
+      answer: 3,
+      explain: "...The idea of writing spread, but the English letters themselves did not. Sequoyah kept the concept and built something new for his own culture, which is stimulus diffusion. Relocation would need people physically moving and carrying the trait with them... nobody moved here. ...Like hearing that a rival clan uses signal fires, then inventing your own code.",
+      hint: '...Ask whether the trait arrived unchanged, or only the idea behind it.',
+    },
+    {
+      id: 'geo-m-09',
+      tier: 'medium',
+      q: 'In a large metropolitan area, an international airport is ringed by hotels, warehouses, and logistics firms. A university district has bookstores, cafés, and tech start-ups. Heavy industry clusters near the port, far from the wealthy residential areas, and the old downtown is only one of several business districts. Which urban model best describes this city?',
+      options: [
+        'Harris-Ullman multiple nuclei model',
+        'Burgess concentric zone model',
+        'Hoyt sector model',
+        'Griffin-Ford Latin American city model',
+      ],
+      answer: 0,
+      explain: "...Several separate centers, each pulling in related activities, while some uses like heavy industry and wealthy homes avoid each other. That's the Harris-Ullman multiple nuclei model. Burgess assumes one CBD with everything arranged in rings around it, but here downtown is just one center among many. ...Like rival daimyo, each with his own castle town.",
+      hint: '...Count how many centers the city has.',
+    },
+    {
+      id: 'geo-m-10',
+      tier: 'medium',
+      q: 'According to the gravity model, which pair of cities would be expected to have the greatest flow of migrants, phone calls, and trade between them?',
+      options: [
+        'Pair A: 10 million and 1 million people, 1,000 km apart',
+        'Pair B: 2 million and 2 million people, 400 km apart',
+        'Pair C: 4 million and 3 million people, 100 km apart',
+        'Pair D: 0.5 million and 0.2 million people, 50 km apart',
+      ],
+      answer: 2,
+      explain: "...Multiply the populations, then divide by the distance. Pair C gives 12 ÷ 100, far higher than Pair A's 10 ÷ 1,000. Pair A has the biggest city, but it is so far away that distance decay wins, just as Ravenstein saw that most migrants travel short distances. ...Two big castles close together exchange the most messengers.",
+      hint: '...Big populations attract interaction, but distance weakens it, so weigh both.',
+    },
+    {
+      id: 'geo-h-09',
+      tier: 'hard',
+      q: 'During the Cold War, the United States built a chain of alliances and military bases around the edges of Eurasia: NATO in Western Europe, CENTO in the Middle East, SEATO in Southeast Asia, and security treaties with Japan and South Korea. Its goal was to contain the Soviet Union, which controlled most of the Eurasian interior. Which geopolitical theory most directly supports this strategy, and why?',
+      options: [
+        "Mackinder's heartland theory, because it argued that sea powers on the coasts would always defeat a land power in the Eurasian interior",
+        "Ratzel's organic theory, because it argued that a state must keep gaining territory in order to survive",
+        "Mackinder's heartland theory, because the alliances were designed to let the United States occupy Eastern Europe and the Eurasian interior",
+        "Spykman's rimland theory, because it argued that the populous, resource-rich coastal margins of Eurasia were the real key to world power, so holding them would contain the heartland",
+      ],
+      answer: 3,
+      explain: "...Look at where every alliance sits: Western Europe, the Middle East, Southeast and East Asia, all on the rim and never the interior. Spykman argued that the rimland, with most of Eurasia's people, ports, and industry, was the real key to power, so holding it would contain the heartland. Mackinder said nearly the opposite: the land power controlling the heartland held the advantage, and he never claimed sea powers would always win. ...You don't storm a mountain castle; you hold every road around it.",
+      hint: '...Notice whether the alliances sit in the middle of Eurasia or around its edges.',
+    },
+    {
+      id: 'geo-h-10',
+      tier: 'hard',
+      q: "A development agency argues that Country P, which mainly exports cacao and timber, can become a wealthy industrial nation by raising its savings rate, building roads and ports, and attracting investment, just as Britain and the United States once did. A critic replies that Country P's trade with wealthy countries locks it into supplying cheap raw materials while those countries capture most of the value. Which of the following best explains the disagreement?",
+      options: [
+        "The agency applies world-systems theory, which says all countries pass through the same stages, while the critic applies Rostow's model, which stresses unequal trade",
+        "The agency applies Rostow's stages of growth, which assume every country can follow the same linear path to high mass consumption, while the critic applies Wallerstein's world-systems theory, in which the core benefits from keeping the periphery dependent",
+        "Both apply Rostow's model, but they disagree about whether Country P is in the take-off stage or the drive to maturity",
+        "The agency applies Weber's least cost theory, while the critic argues that Country P is too far from markets for factories to locate there",
+      ],
+      answer: 1,
+      explain: "...The agency's plan is a ladder: save, build, take off, just like Britain did. That's Rostow, a linear model where every country can reach high mass consumption. The critic says the ladder is rigged, because the core buys cheap cacao and keeps the profits, which is Wallerstein's world-systems view. Swapping the two names is the trap... Rostow believes every clan can rise, and Wallerstein says the board was set before the game began.",
+      hint: '...Decide which speaker believes every country climbs the same steps, and which one blames the global system.',
+    },
   ],
 
   eggs: [
     {
-      academic: `"The mitochondria produce ATP for the cell. Please remember that. ...It is like a supply depot behind the front line. Takeda Shingen would guard it first."`,
+      academic: `"In stage two of the Demographic Transition Model, death rates fall but birth rates stay high. Please remember that for the AP Human Geography exam. ...It is like an army that stops losing soldiers to sickness but keeps recruiting. Takeda Shingen would want that."`,
       slip: `Starts with a crisp "I shall explain it properly," then trails off into a long pause and a soft "...mm."`,
       tell: `Keeps reaching for headphones around her neck that are not there.`,
     },
     {
-      academic: `"Two x plus six equals fourteen, so x is four. Please subtract the six first. ...Like Sekigahara. Once you see which side moves first, the outcome is decided."`,
+      academic: `"The Berlin Conference drew superimposed boundaries across Africa, ignoring the ethnic groups already there. Please write that down. ...Like Ieyasu redrawing the domains after Sekigahara. The people living there were never asked."`,
       slip: `Introduces herself as "Itsuki Nakano, at your service," then quietly adds "...Fūrinkazan" and goes silent.`,
       tell: `Sips a can of matcha soda and politely pushes away the meat bun in front of her. The real Itsuki would never refuse food.`,
     },
     {
-      academic: `"The Industrial Revolution began in Britain because coal and iron were found close together. ...Weber would call that a least-cost location. Please take notes."`,
+      academic: `"The Industrial Revolution began in Britain because coal and iron were found close together. ...Weber would call that a least-cost location. Nobunaga bought his muskets from Sakai for the same reason: the iron, the smiths, and the port were all in one place. Please take notes."`,
       slip: `Calls the study session "the campaign" and the tutor "my general," then over-corrects with three stiff "excuse me"s.`,
       tell: `Hums a slow Sengoku drama theme under her breath, and the star hairpin is clipped on the wrong side.`,
+    },
+  ],
+
+  // Spoken lesson, read aloud by text-to-speech: no symbols, abbreviations spelled out.
+  lecture: [
+    {
+      title: 'Demographic Transition',
+      say: '...Mm. We start with the Demographic Transition Model. It follows birth rates and death rates through five stages as a country develops. Death rates fall first, thanks to medicine and clean water, so the population grows fastest in stage two, and later birth rates fall too and growth slows.',
+      simpler: 'First, fewer people die. Later, people have fewer babies. In between, the population grows very fast, like an army that stops losing soldiers to sickness but keeps recruiting.',
+      example: 'Niger has high birth rates and falling death rates, so it fits stage two. Japan now has more deaths than births, so its population is shrinking, which fits stage five.',
+    },
+    {
+      title: 'Migration',
+      say: 'Next, migration. People are pushed out of places by war, poverty, or disaster, and pulled toward jobs, safety, and family. Ravenstein noticed that most migrants move short distances, often in steps, and that every flow creates a counterflow. The gravity model adds that big places close together interact the most.',
+      simpler: 'Bad conditions push people away, and good ones pull them in. Most people move a short way, and big nearby cities attract the most movers.',
+      example: 'Most migrants from Mexico settle in Texas and California, which are large and close by, rather than in distant states. Relatives who moved first often help others follow, which is called chain migration.',
+    },
+    {
+      title: 'Cultural Diffusion',
+      say: 'Now, how culture spreads. In relocation diffusion, people move and carry a trait with them. In expansion diffusion, the trait spreads while people stay put, either contagiously from neighbor to neighbor, hierarchically from big important places down to smaller ones, or by stimulus, where only the idea spreads and its form changes. ...Orders passing from the daimyo to his generals, then to the foot soldiers, are hierarchical.',
+      simpler: 'Sometimes people carry culture to a new place. Other times the culture travels on its own, to neighbors, to big cities first, or as an idea that gets changed along the way.',
+      example: 'Sequoyah saw English writing and invented a brand new writing system for the Cherokee language. The idea of writing spread, but the English letters did not, so that is stimulus diffusion.',
+    },
+    {
+      title: 'Political Geography',
+      say: 'Political geography is about states, boundaries, and power. A state can be compact, elongated, fragmented, prorupted, or perforated, and its shape affects how easily it holds together. Centripetal forces unite a state, while centrifugal forces pull it apart, sometimes toward devolution. Mackinder said whoever controls the Eurasian heartland gains world power, but Spykman argued the coastal rimland mattered more.',
+      simpler: 'Shape, borders, and loyalty decide whether a country holds together. Think of a clan, where a shared banner unites it and rival retainers split it.',
+      example: 'Indonesia is fragmented across thousands of islands, which makes it hard to govern. Catalonia, with its own language and a strong economy, pushes Spain for more power, which is devolution.',
+    },
+    {
+      title: 'Land Use and Cities',
+      say: 'Von Thünen showed that farmland forms rings around a market city. Products that spoil quickly, like milk and vegetables, stay close, and ranching goes farthest out, because land near the city costs more. Inside cities, Burgess drew rings around the central business district, Hoyt drew wedges along transport lines, and Harris and Ullman drew several separate centers.',
+      simpler: 'Food that spoils fast is grown near the city. Inside cities, land use forms rings, wedges, or many small centers.',
+      example: 'Chicago was the model for the Burgess rings. Los Angeles, with business centers near the airport, the port, and downtown, fits the multiple nuclei model better.',
+    },
+    {
+      title: 'Development Theories',
+      say: "Last, development. Rostow said every country climbs the same five stages, from traditional society through take-off to high mass consumption. Wallerstein disagreed, arguing that the world economy has a core, a semi-periphery, and a periphery, and that the core profits by keeping the periphery a supplier of cheap raw materials. ...Rostow believes every clan can rise, but Wallerstein says the board was set before the game began.",
+      simpler: 'Rostow thinks every country can grow rich by following the same steps. Wallerstein thinks rich countries keep poorer countries stuck supplying them.',
+      example: "South Korea grew from a poor farming country into an industrial power, which supporters of Rostow point to. Countries that still mainly export coffee or copper to wealthy nations fit Wallerstein's periphery.",
     },
   ],
 }

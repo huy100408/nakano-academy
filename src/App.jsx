@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ClipboardList, Egg, GraduationCap, Target, UserRound } from 'lucide-react'
 import { SISTERS, byId } from './data/sisters.js'
 import AuthGate from './features/auth/AuthGate'
-import { getSettings, voiceAvailable } from './lib/voice.js'
-import { reviewQueue, useAcademy } from './state/useAcademy'
+import { playPop, setSfxEnabled } from './services/sfxEngine'
+import { setVoicePrefs, speak } from './services/voiceTutor'
+import { MIDTERM_WARNING_BELOW, reviewQueue, useAcademy } from './state/useAcademy'
 import Classroom from './components/Classroom.jsx'
 import EggsView from './components/EggsView.jsx'
 import ReportView from './components/ReportView.jsx'
 import ReviewView from './components/ReviewView.jsx'
 import SettingsSheet from './components/SettingsSheet.jsx'
 import Sidebar, { Hud, SyncBadge } from './components/Sidebar.jsx'
-import { Avatar, Toaster, accentVars } from './components/ui.jsx'
+import { Avatar, Toaster, accentVars, toast } from './components/ui.jsx'
 import Intro, { introEnabled } from './intro/Intro.jsx'
 
 function Shell() {
@@ -18,7 +19,6 @@ function Shell() {
   const [view, setView] = useState('class')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [hudOpen, setHudOpen] = useState(false)
-  const [voice, setVoice] = useState(null)
   const active = byId(state.profile.preferred_sister) ? state.profile.preferred_sister : 'miku'
   const s = byId(active)
   const reviewCount = reviewQueue(state.progress).length
@@ -34,9 +34,32 @@ function Shell() {
     if (byId(t)) setPreferredSister(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const p = state.profile
+  // Voice + sound-effect preferences live in the user's profile (synced across devices).
   useEffect(() => {
-    if (voiceAvailable) getSettings().then(setVoice)
+    setSfxEnabled(p.sfx_enabled)
+    setVoicePrefs({ enabled: p.voice_enabled, volume: Number(p.voice_volume), speed: Number(p.voice_speed) })
+  }, [p.sfx_enabled, p.voice_enabled, p.voice_volume, p.voice_speed])
+
+  // Tactile pop on every button press (quiz options play their own chime instead).
+  useEffect(() => {
+    const onDown = (e) => {
+      const b = e.target.closest?.('button')
+      if (b && !b.disabled && !b.closest('[data-nopop]')) playPop()
+    }
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
   }, [])
+
+  // Voiced Midterm Warning when Mr. Nakano's approval drops below the line.
+  const lastApproval = useRef(p.maruo_approval)
+  useEffect(() => {
+    if (lastApproval.current >= MIDTERM_WARNING_BELOW && p.maruo_approval < MIDTERM_WARNING_BELOW) {
+      toast('Midterm Warning! Open the HUD for the Rescue challenge.', { ms: 5000 })
+      speak('Midterm warning! Father is not satisfied with our results. Please, let us take the rescue challenge together.', 'itsuki')
+    }
+    lastApproval.current = p.maruo_approval
+  }, [p.maruo_approval])
 
   // 1–5 switch tutors anywhere (quiz answers use A–D).
   useEffect(() => {
@@ -49,7 +72,7 @@ function Shell() {
     return () => window.removeEventListener('keydown', onKey)
   })
 
-  const voiceReady = Boolean(voice?.voiceEnabled && voice?.hasApiKey)
+  const voiceReady = Boolean(p.voice_enabled)
   const tabs = [
     ['class', 'Class', GraduationCap],
     ['review', 'Review', Target],
@@ -125,7 +148,7 @@ function Shell() {
           </div>
         </div>
       )}
-      {settingsOpen && <SettingsSheet onClose={() => setSettingsOpen(false)} onChange={setVoice} />}
+      {settingsOpen && <SettingsSheet onClose={() => setSettingsOpen(false)} />}
     </div>
   )
 }

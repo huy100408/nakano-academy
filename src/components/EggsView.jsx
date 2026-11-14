@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { ArrowRight, BookOpenText, Check, Eye, Flame, MessageCircle, PersonStanding, RotateCcw, Trophy, X } from 'lucide-react'
+import { ArrowRight, AudioLines, BookOpenText, Check, Eye, Flame, Loader2, MessageCircle, PersonStanding, RotateCcw, Trophy, X } from 'lucide-react'
+import { speak } from '../services/voiceTutor'
+import { toast } from './ui.jsx'
 import { EGG_ROUNDS } from '../data/curriculum.js'
 import { SISTERS, byId } from '../data/sisters.js'
 import { useAcademy } from '../state/useAcademy'
@@ -11,6 +13,7 @@ const CLUES = [
   { key: 'academic', label: 'Clue 1 · Academic answer', icon: BookOpenText, mult: 3 },
   { key: 'slip', label: 'Clue 2 · Speech slip', icon: MessageCircle, mult: 2 },
   { key: 'tell', label: 'Clue 3 · Behavioural tell', icon: PersonStanding, mult: 1 },
+  { key: 'voice', label: 'Clue 4 · Voice tell', icon: AudioLines, mult: 1 },
 ]
 
 /** One round per sister first, so a game of 5 can't repeat a target until all five appeared. */
@@ -104,6 +107,13 @@ export default function EggsView() {
     return last && last.target_sister === last.guessed_sister ? last.streak_at_time : 0
   })
   const [gameBest, setGameBest] = useState(0)
+  const [listening, setListening] = useState(false)
+  const hearVoice = async () => {
+    setListening(true)
+    const res = await speak(r.academic.replace(/^["“]|["”]$/g, ''), r.who, { force: true })
+    setListening(false)
+    if (!res.ok) toast(`Voice unavailable: ${res.error}`, { ms: 4000 })
+  }
   const done = i >= rounds.length
   const r = rounds[i]
   const mult = CLUES[shown - 1].mult
@@ -205,12 +215,20 @@ export default function EggsView() {
                           <Eyebrow>
                             {c.label} · ×{c.mult}
                           </Eyebrow>
-                          {open ? <p className="anim-fade-up mt-0.5 text-[14.5px] leading-snug">{r[c.key]}</p> : <p className="mt-0.5 text-[13px] italic text-faint">Hidden</p>}
+                          {open && c.key === 'voice' ? (
+                            <button onClick={hearVoice} disabled={listening} className="btn-3d mt-1.5 flex min-h-[40px] items-center gap-2 rounded-xl border border-line bg-white px-3 text-[13px] font-bold">
+                              {listening ? <Loader2 size={14} className="animate-spin" /> : <AudioLines size={14} />} Hear her read clue 1 aloud
+                            </button>
+                          ) : open ? (
+                            <p className="anim-fade-up mt-0.5 text-[14.5px] leading-snug">{r[c.key]}</p>
+                          ) : (
+                            <p className="mt-0.5 text-[13px] italic text-faint">Hidden</p>
+                          )}
                         </div>
                       </div>
                     )
                   })}
-                  {!guess && shown < 3 && (
+                  {!guess && shown < CLUES.length && (
                     <button onClick={() => setShown(shown + 1)} className="mt-3 flex min-h-[40px] items-center gap-2 rounded-xl border border-dashed border-red-300 px-3 text-[13px] font-semibold text-red-700 hover:bg-red-50">
                       <Eye size={14} /> Reveal clue {shown + 1} (drops to ×{CLUES[shown].mult})
                     </button>
@@ -228,7 +246,7 @@ export default function EggsView() {
                           key={s.id}
                           onClick={() => choose(s.id)}
                           disabled={!!guess}
-                          className={`relative flex min-h-[72px] flex-col items-center justify-center gap-1 rounded-xl border-[1.5px] bg-white px-1 py-2 text-[12px] font-bold transition ${
+                          className={`btn-3d relative flex min-h-[72px] flex-col items-center justify-center gap-1 rounded-xl border-[1.5px] bg-white px-1 py-2 text-[12px] font-bold transition ${
                             reveal ? (right ? 'border-green-500 bg-green-50' : 'border-red-400 bg-red-50') : guess ? 'border-line opacity-40' : 'border-line hover:-translate-y-0.5 hover:shadow-card'
                           }`}
                         >
@@ -241,7 +259,7 @@ export default function EggsView() {
                   {guess && (
                     <div className="anim-fade-up mt-3 flex items-center gap-3">
                       <span className="text-[14px] font-semibold">{guess === r.who ? `Correct! +${BASE * mult} points` : 'Wrong guess: 0 points, streak reset'}</span>
-                      <button onClick={next} className="ml-auto flex min-h-[44px] items-center gap-2 rounded-xl bg-ink px-5 text-[14px] font-bold text-white">
+                      <button onClick={next} className="btn-3d ml-auto flex min-h-[44px] items-center gap-2 rounded-xl bg-ink px-5 text-[14px] font-bold text-white">
                         {i + 1 >= rounds.length ? 'Results' : 'Next round'} <ArrowRight size={15} />
                       </button>
                     </div>

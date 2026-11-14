@@ -1,4 +1,5 @@
-// Nino Nakano · English (grammar & usage, vocabulary in context, punctuation, sentence structure).
+// Nino Nakano · English Literature & Composition (literary devices, rhetoric, thesis writing, meter,
+// tone and diction) plus grammar & usage, vocabulary in context, punctuation, sentence structure.
 // Question `answer` is the index into `options`.
 
 export default {
@@ -112,6 +113,20 @@ export default {
       back: `Cut words that repeat a meaning or add nothing.\n"5 a.m. in the morning" → "5 a.m."\n"in order to" → "to" · "due to the fact that" → "because"\nOn the SAT/ACT, the shortest choice that keeps the full meaning and grammar is usually right.`,
       takeaway: `Shorter wins only if nothing important is lost, so check meaning and grammar before you pick the shortest option.`,
       hook: `"A good sauce is reduced, not watered down. Simmer your sentence until only the flavor is left."`,
+    },
+    {
+      id: 'english-fc-11',
+      front: 'Rhetorical Appeals: Ethos, Pathos, Logos',
+      back: `Ethos: credibility. Why should you trust the speaker?\n"As a pastry chef with twenty years of experience..."\nPathos: emotion. Make the audience feel something.\n"Imagine a child going to bed hungry tonight."\nLogos: logic and evidence. Facts, statistics, reasoning.\n"Cold butter melts later in the oven, so it leaves steam pockets and flakier layers."`,
+      takeaway: `Ask what the writer is leaning on: who they are (ethos), how you feel (pathos), or the evidence and reasoning (logos).`,
+      hook: `"Ethos is my reputation, pathos is your stomach growling, logos is the recipe that actually works. A real argument needs all three, like flour, sugar, and butter."`,
+    },
+    {
+      id: 'english-fc-12',
+      front: 'Simile vs. Metaphor, Irony & Foreshadowing',
+      back: `Simile: compares using "like" or "as." "Her voice was like burnt sugar."\nMetaphor: says one thing IS another. "Her voice was burnt sugar."\nDramatic irony: the audience knows something a character doesn't.\nSituational irony: the outcome is the opposite of what was expected.\nForeshadowing: an early hint of something that happens later.`,
+      takeaway: `For comparisons, look for "like" or "as"; for irony, ask who knows what and what everyone expected.`,
+      hook: `"A simile says the cake is LIKE a cloud. A metaphor says it IS a cloud. Irony is the cake collapsing the second you brag about it."`,
     },
   ],
 
@@ -380,6 +395,76 @@ export default {
       explain: `"A.m." already means morning, so "in the morning" is redundant, and "in order to" is just a bloated "to." The shortest choice, "At 5 a.m., Nino woke," throws out why she woke up, so it loses meaning. The right answer trims the fat and keeps every ingredient.`,
       hint: `Cut the words that repeat an idea, but don't throw out the reason she woke up.`,
     },
+
+    /* ───────────── Literature & Composition (added) ───────────── */
+    {
+      id: 'english-e-09',
+      tier: 'easy',
+      q: 'Which literary device is used in this line?',
+      code: 'Her temper was a pot left boiling on the stove.',
+      options: ['Simile', 'Personification', 'Metaphor', 'Onomatopoeia'],
+      answer: 2,
+      explain: `There's no "like" or "as," so it can't be a simile. The line says her temper WAS a boiling pot, a direct comparison, and that's a metaphor. Nothing non-human is acting human and nothing makes a sound effect, so the other two are out. And for the record, my temper is perfectly under control.`,
+      hint: `Check whether the comparison uses "like" or "as," or just says one thing is another.`,
+    },
+    {
+      id: 'english-e-10',
+      tier: 'easy',
+      q: "The speaker's diction mainly creates which tone?",
+      code: 'Oh, wonderful. Another "masterpiece" of burnt toast. Truly, the chef has outdone himself.',
+      options: ['Admiring', 'Sarcastic', 'Nostalgic', 'Fearful'],
+      answer: 1,
+      explain: `Diction means word choice: "wonderful," "masterpiece" in quotation marks, and "outdone himself" are praise words aimed at burnt toast. Praising something awful means the speaker says the opposite of what he means, so the tone is sarcastic. Tone is the speaker's attitude; the feeling it gives YOU is the mood. Don't mix up the chef and the customer.`,
+      hint: `Compare what the words say with what is actually being described.`,
+    },
+    {
+      id: 'english-m-09',
+      tier: 'medium',
+      q: 'Which rhetorical appeal does this sentence rely on most?',
+      code: 'As a pastry chef with twenty years of experience, I can tell you that cold butter makes the flakiest crust.',
+      options: ['Logos', 'Pathos', 'Hyperbole', 'Ethos'],
+      answer: 3,
+      explain: `The speaker opens with her credentials, "twenty years of experience," so you'll trust her before she even makes the claim. An appeal to the speaker's credibility is ethos. There are no statistics or reasoning steps for logos, she isn't tugging at your feelings for pathos, and hyperbole isn't an appeal at all. Hmph. That's exactly how I get people to listen to me in the kitchen.`,
+      hint: `Notice what the speaker tells you about herself before she makes her point.`,
+    },
+    {
+      id: 'english-m-10',
+      tier: 'medium',
+      q: 'Which sentence is the strongest thesis statement for a literary analysis essay?',
+      options: [
+        "In Romeo and Juliet, Shakespeare uses the lovers' rushed decisions to argue that passion without patience leads to destruction.",
+        'Romeo and Juliet is a tragedy by William Shakespeare about two young lovers from feuding families in Verona.',
+        'In this essay, I will discuss the many important themes that appear in Romeo and Juliet, such as love and fate.',
+        'Romeo and Juliet is the greatest love story ever written, and everyone should read it at least once.',
+      ],
+      answer: 0,
+      explain: `A thesis is a specific, arguable claim you can prove with evidence from the text. The second choice is a plot fact nobody would argue with, the third just announces a topic, and the fourth is an opinion too vague to prove with the play itself. Only the first says what Shakespeare does and what it means. A thesis is the recipe card for your whole essay, so make it precise.`,
+      hint: `Look for the choice that someone could disagree with and that you could prove using the play.`,
+    },
+    {
+      id: 'english-h-09',
+      tier: 'hard',
+      q: 'Which device does this scene use most clearly?',
+      code: 'The audience has already watched the villain poison the cake. The hero smiles, cuts a huge slice, and says, "Nothing could ruin a day this perfect."',
+      options: ['Situational irony', 'Dramatic irony', 'Foreshadowing', 'Hyperbole'],
+      answer: 1,
+      explain: `The key is who knows what: the audience knows the cake is poisoned, and the hero doesn't, so his cheerful line means something completely different to us. That gap is dramatic irony. Situational irony needs an outcome that flips what everyone expected, and foreshadowing hints at something the audience doesn't know yet, but we already know. Also, poisoning a cake is the worst crime imaginable.`,
+      hint: `Compare what the audience knows with what the hero knows at that moment.`,
+    },
+    {
+      id: 'english-h-10',
+      tier: 'hard',
+      q: 'Which line is written in iambic pentameter?',
+      options: [
+        'Once upon a midnight dreary, while I pondered, weak and weary',
+        'I wandered lonely as a cloud',
+        "Shall I compare thee to a summer's day?",
+        'This is the forest primeval. The murmuring pines and the hemlocks',
+      ],
+      answer: 2,
+      explain: `Iambic pentameter is five iambs, each an unstressed beat then a stressed one, so ten syllables: da-DUM five times. "Shall I com-PARE thee TO a SUM-mer's DAY" has exactly that. "I wandered lonely as a cloud" is iambic but only eight syllables, so it's tetrameter; Poe's line starts on the stress, ONCE up-on, which is trochaic, and Longfellow's rolls in threes. Count the beats like you'd count eggs, carefully.`,
+      hint: `Count the syllables first, then tap out where the stress falls in each pair.`,
+    },
   ],
 
   eggs: [
@@ -397,6 +482,45 @@ export default {
       academic: `"In stage two of the demographic transition, the death rate decreases. Not 'decreases down,' please. That is redundant, and I will not tolerate it."`,
       slip: `"Excuse me, would you care for a meat bun? ...Wait, these are store-bought?! Who serves this— Ahem. How lovely. Thank you."`,
       tell: `Checks her freshly done nails while "Itsuki" politely declines a third helping, which the real Itsuki would never, ever do.`,
+    },
+  ],
+
+  lecture: [
+    {
+      title: 'Claims and thesis',
+      say: `Listen up, because I am only explaining this once. Every essay about literature starts with a claim, a point someone could reasonably argue against, and your thesis is your main claim in one clear sentence. Plot summary is not a thesis. Retelling the story is just reading the recipe out loud, not cooking anything.`,
+      simpler: `A thesis is your main opinion about the text, written as one sentence you can prove. If nobody could disagree with it, it is not a thesis.`,
+      example: `Saying Romeo and Juliet is about two teenagers in love is summary. Saying the play shows that rushing into love leads to disaster is a thesis.`,
+    },
+    {
+      title: 'Evidence and commentary',
+      say: `A claim with no evidence is just you being loud, and trust me, I know loud. Use short quotations from the text, then explain exactly how each one supports your thesis. That explanation is called commentary, and it is where the real cooking happens, so never drop a quote and walk away.`,
+      simpler: `Prove your point with words from the text. Then explain in your own words why those words prove it.`,
+      example: `If you claim a character is lonely, quote the line where she eats dinner alone every night. Then explain how that habit shows how isolated she feels.`,
+    },
+    {
+      title: 'Simile and metaphor',
+      say: `Authors compare things on purpose, and you need to know which kind of comparison you are looking at. A simile uses like or as, while a metaphor skips those words and says one thing simply is another. Naming the device is only half the recipe, so always explain what the comparison makes the reader see or feel.`,
+      simpler: `A simile says something is like something else. A metaphor says it is that thing. Either way, explain why the author chose it.`,
+      example: `Writing that her smile was like a locked door is a simile. Writing that her smile was a locked door is a metaphor. Both tell you she is hiding her feelings.`,
+    },
+    {
+      title: 'Irony and foreshadowing',
+      say: `Irony lives in the gap between what is expected and what actually happens. Dramatic irony means the audience knows something a character does not, and situational irony means the outcome is the opposite of what everyone expected. Foreshadowing is different. It is an early hint that prepares you for something later, like smelling smoke before you see the burnt cookies.`,
+      simpler: `Dramatic irony is when you know something the character does not. Situational irony is a twist on what was expected. Foreshadowing is a clue about what will happen next.`,
+      example: `In Romeo and Juliet, the audience knows Juliet is only sleeping, but Romeo believes she is dead. That is dramatic irony, and it makes his final choice painful to watch.`,
+    },
+    {
+      title: 'Diction, tone, and mood',
+      say: `Diction is word choice, and every word carries a flavor on top of its dictionary meaning. Those choices build the tone, which is the author's attitude, and the mood, which is the feeling the reader gets. Do not mix them up. Tone belongs to the writer, and mood belongs to you.`,
+      simpler: `Diction means the words the author picks. Tone is how the author feels, and mood is how the reader feels.`,
+      example: `Calling a house cozy sounds warm, but calling it cramped sounds annoyed. Same small house, completely different tone.`,
+    },
+    {
+      title: 'Ethos, pathos, and logos',
+      say: `When you write about an argument, like a speech or an essay, look at how the writer persuades. Ethos builds trust in the speaker, pathos stirs the audience's emotions, and logos uses facts and reasoning. Explain which one the writer leans on and why it works for that audience. Now go write something I would actually want to read.`,
+      simpler: `Ethos is trust, pathos is feelings, and logos is logic. Figure out which one the writer uses most and why.`,
+      example: `A doctor who mentions her years of experience before giving advice is using ethos. If she adds statistics about recovery rates, she is using logos too.`,
     },
   ],
 }

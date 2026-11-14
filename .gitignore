@@ -8,3 +8,5 @@ _source_videos/
 .env
 .claude/
 supabase/.temp/
+.env.local
+*.local

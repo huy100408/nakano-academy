@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AlertTriangle, ClipboardList, Cloud, CloudOff, Egg, ExternalLink, Flame, Loader2, LogOut, RotateCcw, Settings, ShieldCheck, Target } from 'lucide-react'
+import { AlertTriangle, ClipboardList, Cloud, CloudOff, Egg, ExternalLink, Flame, Loader2, LogOut, Mic, MicOff, RotateCcw, Settings, ShieldCheck, Target, Volume2, VolumeX } from 'lucide-react'
 import { ITEMS } from '../data/items.js'
 import { SISTERS, SUBJECTS, FUUTAROU_IDLE, byId } from '../data/sisters.js'
 import { useAuth } from '../features/auth/AuthGate'
@@ -70,7 +70,7 @@ function fuutarouLine(p, avg) {
 /** The Fuutarou HUD: account, sync, score, streak, items and Maruo's approval. */
 export function Hud({ onRescue, onSettings }) {
   const { user, signOut } = useAuth()
-  const { state, mastery, inventory, syncStatus } = useAcademy()
+  const { state, mastery, inventory, syncStatus, setPrefs } = useAcademy()
   const [reset, setReset] = useState(false)
   const p = state.profile
   const avg = Math.round(SUBJECTS.reduce((n, s) => n + mastery[s.key], 0) / SUBJECTS.length)
@@ -144,11 +144,17 @@ export function Hud({ onRescue, onSettings }) {
       </p>
 
       <div className="mt-3 flex gap-1.5">
-        <button onClick={() => setReset(true)} className="flex h-8 flex-1 items-center justify-center gap-1.5 rounded-lg bg-white/[.08] text-[11.5px] font-semibold hover:bg-white/[.14]" title="Reset cloud progress">
-          <RotateCcw size={13} /> Reset
+        <button onClick={() => setPrefs({ sfx_enabled: !p.sfx_enabled })} className="grid h-8 w-8 place-items-center rounded-lg bg-white/[.08] hover:bg-white/[.14]" title={p.sfx_enabled ? 'Mute sound effects' : 'Unmute sound effects'} aria-label="Toggle sound effects">
+          {p.sfx_enabled ? <Volume2 size={14} /> : <VolumeX size={14} className="text-white/40" />}
+        </button>
+        <button onClick={() => setPrefs({ voice_enabled: !p.voice_enabled })} className="grid h-8 w-8 place-items-center rounded-lg bg-white/[.08] hover:bg-white/[.14]" title={p.voice_enabled ? 'Turn tutor voices off' : 'Turn tutor voices on'} aria-label="Toggle tutor voices">
+          {p.voice_enabled ? <Mic size={14} /> : <MicOff size={14} className="text-white/40" />}
+        </button>
+        <button onClick={() => setReset(true)} className="grid h-8 w-8 place-items-center rounded-lg bg-white/[.08] hover:bg-white/[.14]" title="Reset cloud progress" aria-label="Reset cloud progress">
+          <RotateCcw size={13} />
         </button>
         <button onClick={signOut} className="flex h-8 flex-1 items-center justify-center gap-1.5 rounded-lg bg-white/[.08] text-[11.5px] font-semibold hover:bg-white/[.14]">
-          <LogOut size={13} /> Sign out
+          <LogOut size={13} /> <span className="whitespace-nowrap">Sign out</span>
         </button>
         {onSettings && (
           <button onClick={onSettings} className="grid h-8 w-8 place-items-center rounded-lg bg-white/[.08] hover:bg-white/[.14]" aria-label="Settings" title="Settings">

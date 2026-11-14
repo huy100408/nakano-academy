@@ -1,5 +1,6 @@
-// Ichika Nakano — Mathematics.
-// Questions: 8 easy (Tutoring Session), 8 medium (Midterm), 8 hard (Final Exam).
+// Ichika Nakano — Mathematics: Algebra, Geometry & Calculus.
+// Questions: 8 easy (Tutoring Session), 10 medium (Midterm), 12 hard (Final Exam).
+// Calculus questions are appended at the end of `questions` so existing ids never move.
 // `answer` is the index into `options`.
 
 export default {
@@ -113,6 +114,20 @@ export default {
       back: 'P(event) = favorable outcomes ÷ total outcomes\nP(A and B) = P(A) × P(B, given A happened)\nP(A or B) = P(A) + P(B) − P(A and B)',
       takeaway: 'Without replacement, the second probability changes because the bag has shrunk.',
       hook: '"AND means multiply, OR means add (then subtract the overlap)." Once a marble exits the stage, it does not come back for the encore~',
+    },
+    {
+      id: 'math-fc-11',
+      front: 'Derivatives: Power & Chain Rule',
+      back: 'd/dx [xⁿ] = n · xⁿ⁻¹\nd/dx [c] = 0 · d/dx [c · f(x)] = c · f′(x)\nChain rule: d/dx [f(g(x))] = f′(g(x)) · g′(x)\nf′(a) = slope of the tangent line at x = a',
+      takeaway: "Bring the exponent down and lower it by one; for a function inside a function, also multiply by the inside's derivative.",
+      hook: '"Bring it down, knock it down one": the exponent steps to the front of the stage, then the power drops a step. In the chain rule the outer role performs first, and the inner understudy still gets a bow~',
+    },
+    {
+      id: 'math-fc-12',
+      front: 'Limits & Integrals',
+      back: 'lim (x→a) f(x) = the value f(x) approaches as x nears a\n0/0? Factor, cancel, then plug in\n∫ xⁿ dx = xⁿ⁺¹ / (n + 1) + C  (n ≠ −1)\n∫ₐᵇ f(x) dx = F(b) − F(a) = signed area under f',
+      takeaway: 'Integration undoes differentiation: raise the exponent by one, divide by the new exponent, then take F(b) − F(a) for the area.',
+      hook: 'An antiderivative is the derivative scene played in rewind. And never forget + C, the uncredited extra who shows up in every indefinite integral~',
     },
   ],
 
@@ -351,6 +366,67 @@ export default {
       explain: '1) First draw: 5 red out of 8, so 5/8. 2) Second draw: 4 red left out of 7, so 4/7. 3) Multiply: 5/8 × 4/7 = 20/56 = 5/14. 25/64 would be WITH replacement, but once a marble exits the stage it does not come back~',
       hint: 'After the first red marble leaves, both the red count and the total shrink.',
     },
+
+    /* ─────────────── CALCULUS · Midterm (medium) ─────────────── */
+    {
+      id: 'math-m-09',
+      tier: 'medium',
+      q: 'Evaluate the limit:',
+      code: 'lim (x→3) (x² − 9) / (x − 3)',
+      options: ['0', 'Does not exist', '6', '3'],
+      answer: 2,
+      explain: '1) Plugging in 3 gives 0/0, which is a cliffhanger, not an answer. 2) Factor the top: (x − 3)(x + 3) / (x − 3), then cancel (x − 3) to leave x + 3. 3) Now plug in: 3 + 3 = 6. The hole in the graph is just a missing extra; the limit still knows where the scene was heading~',
+      hint: 'If plugging in straight away gives 0/0, look for a factor you can cancel first.',
+    },
+    {
+      id: 'math-m-10',
+      tier: 'medium',
+      q: 'If f(x) = 4x³ − 2x² + 7x − 5, what is f′(x)?',
+      options: ['12x² − 4x + 7', '12x² − 4x', '4x² − 2x + 7', '12x³ − 4x² + 7x'],
+      answer: 0,
+      explain: '1) Power rule on every term: bring the exponent down in front, then lower it by one. 2) 4x³ becomes 12x², −2x² becomes −4x, and 7x becomes 7. 3) The constant −5 has no x, so its slope is 0 and it simply exits the stage. Result: 12x² − 4x + 7~',
+      hint: 'Treat each term as its own little scene, and think about what a lone constant does to the slope.',
+    },
+
+    /* ─────────────── CALCULUS · Final Exam (hard) ─────────────── */
+    {
+      id: 'math-h-09',
+      tier: 'hard',
+      q: 'Find the derivative:',
+      code: 'y = (3x² + 1)⁴',
+      options: ['4(3x² + 1)³', '6x(3x² + 1)³', '4(6x)³', '24x(3x² + 1)³'],
+      answer: 3,
+      explain: '1) Outer role first: bring the 4 down and lower the power, giving 4(3x² + 1)³. 2) Chain rule: multiply by the derivative of the inside, which is 6x. 3) 4 × 6x = 24x, so y′ = 24x(3x² + 1)³. Forgetting the inside derivative is like cutting the supporting actor from the credits~',
+      hint: 'Differentiate the outer power while leaving the inside untouched, then remember the inside gets its own turn.',
+    },
+    {
+      id: 'math-h-10',
+      tier: 'hard',
+      q: 'What is the equation of the tangent line to y = x³ − 3x at x = 2?',
+      options: ['y = 9x + 2', 'y = 9x − 16', 'y = 3x − 4', 'y = 12x − 22'],
+      answer: 1,
+      explain: '1) The point on the curve: y = 2³ − 3(2) = 8 − 6 = 2, so (2, 2). 2) The slope comes from the derivative: y′ = 3x² − 3, so y′(2) = 12 − 3 = 9. 3) Point-slope form: y − 2 = 9(x − 2), which becomes y = 9x − 16. The derivative gives the slope; the curve gives you the mark to stand on~',
+      hint: 'You need two things: the point on the curve, and the derivative evaluated at that same x.',
+    },
+    {
+      id: 'math-h-11',
+      tier: 'hard',
+      q: "A ball's height after t seconds is h(t) = −5t² + 20t + 2 meters. How fast is it rising at t = 1?",
+      options: ['10 m/s', '17 m/s', '20 m/s', '−10 m/s'],
+      answer: 0,
+      explain: '1) Velocity is the rate of change of height, so take the derivative: h′(t) = −10t + 20. 2) Plug in t = 1: −10 + 20 = 10 m/s. 3) 17 is h(1), the height, not the speed. Where the ball is and how fast it moves are two different roles~',
+      hint: 'A rate of change calls for the derivative, not the height function itself.',
+    },
+    {
+      id: 'math-h-12',
+      tier: 'hard',
+      q: 'What is the area under y = 3x² + 2x from x = 0 to x = 2?',
+      code: '∫₀² (3x² + 2x) dx',
+      options: ['16', '14', '12', '8'],
+      answer: 2,
+      explain: '1) Antiderivative: raise each power by one and divide by the new exponent, so 3x² becomes x³ and 2x becomes x², giving F(x) = x³ + x². 2) F(2) = 8 + 4 = 12 and F(0) = 0. 3) Area = F(2) − F(0) = 12. 14 is what you get by differentiating instead, a classic case of reading the wrong script~',
+      hint: 'Run the power rule in reverse, then subtract the value at the bottom limit from the value at the top.',
+    },
   ],
 
   eggs: [
@@ -368,6 +444,47 @@ export default {
       academic: `"The poem's theme is perseverance. I would also note that its stanzas run 4, 8, then 12 lines: an arithmetic sequence with a common difference of 4. Most elegant."`,
       slip: `"Ara, you got it wrong? Mou~ ...I mean, that is incorrect. Please do not be careless."`,
       tell: 'Mouths lines under her breath between questions and keeps glancing at a folded script page tucked inside the science textbook.',
+    },
+  ],
+
+  // Interactive spoken lesson: algebra basics up to an intro of derivatives.
+  // Read aloud by text-to-speech, so math is written in words.
+  lecture: [
+    {
+      title: 'Variables Are Roles',
+      say: 'Fufu, welcome to rehearsal. In algebra, a letter like x is just a role waiting to be cast, and an equation is the script that tells you who gets the part. Whatever you do to one side of the equation, you do to the other side too, so the scene stays balanced.',
+      simpler: 'A letter stands for a number we do not know yet. Keep both sides balanced, and you can find it.',
+      example: 'Two x plus six equals fourteen. Take six away from both sides to get two x equals eight, then divide both sides by two, so x is four.',
+    },
+    {
+      title: 'Functions and Slope',
+      say: 'A function is like a director: you hand it an input, and it gives back exactly one output. For a straight line, the slope tells you how steep it is, rise over run. Onee-san thinks of it as how fast the story climbs for every step you take forward.',
+      simpler: 'Slope is how much y goes up when x goes up by one.',
+      example: 'On the line y equals three x plus one, every time x grows by one, y grows by three. So the slope is three.',
+    },
+    {
+      title: 'Curves Change Their Steepness',
+      say: 'Not every scene is a straight line. When x is squared or cubed, the graph bends, so its steepness changes from moment to moment. On the graph of x squared, the curve is flat near zero and gets steeper and steeper as x grows.',
+      simpler: 'A curve does not have just one slope. It gets steeper or flatter as you move along it.',
+      example: 'For y equals x squared, going from x equals one to x equals two lifts y from one to four. Going from two to three lifts it from four to nine, so each step climbs more than the last.',
+    },
+    {
+      title: 'Limits: Sneaking Up on a Value',
+      say: 'A limit asks what value a function is heading toward as x gets closer and closer to some number, even if it never quite arrives. It is like watching an actress walk toward her mark: you can tell where she will stop before she gets there. Limits let us talk about one exact instant on a curve.',
+      simpler: 'A limit is the number a function gets close to as x gets close to something.',
+      example: 'As x gets closer and closer to two, x squared gets closer and closer to four. So the limit of x squared as x approaches two is four.',
+    },
+    {
+      title: 'The Derivative Is a Tangent Slope',
+      say: 'Now for the big reveal. Take the slope between two points on a curve, then slide the second point closer and closer to the first. The limit of those slopes is the derivative: the slope of the tangent line, or the instant rate of change at that one point.',
+      simpler: 'The derivative tells you how steep a curve is at exactly one spot, or how fast something is changing right now.',
+      example: 'If your position after t seconds is t squared meters, your speed at three seconds is the derivative there, which is six meters per second.',
+    },
+    {
+      title: 'The Power Rule',
+      say: 'Here is the shortcut every calculus star memorizes, the power rule. Bring the exponent down in front, then lower the exponent by one. Fufu, it is a two beat move, and you just learned your very first calculus line. Onee-san is proud of you.',
+      simpler: 'Move the power to the front, then make the power one smaller.',
+      example: 'The derivative of x cubed is three x squared. So at x equals two, the slope of x cubed is three times four, which is twelve.',
     },
   ],
 }

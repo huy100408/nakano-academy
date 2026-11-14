@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BookOpenCheck, Flame, GraduationCap, Layers, Pause, PencilLine, Play, RotateCcw, SkipForward, Target, Timer } from 'lucide-react'
+import { BookOpenCheck, Flame, GraduationCap, Layers, Mic, Pause, PencilLine, Play, RotateCcw, SkipForward, Target, Timer } from 'lucide-react'
 import { MODULES, TIERS } from '../data/curriculum.js'
 import { itemForSister } from '../data/items.js'
 import { SUBJECTS } from '../data/sisters.js'
-import { speak, stopVoice } from '../lib/voice.js'
+import { speak, stopVoice } from '../services/voiceTutor'
+import VoiceLesson from './VoiceLesson.jsx'
 import { letterGrade, reviewQueue, useAcademy } from '../state/useAcademy'
 import LessonDeck from './LessonDeck.jsx'
 import Quiz from './Quiz.jsx'
@@ -126,7 +127,7 @@ function ModePicker({ s, onStart }) {
         {TIERS.map((t, i) => {
           const total = mod.questions.filter((q) => q.tier === t.key).length
           return (
-            <button key={t.key} onClick={() => onStart(t.key)} className="group flex min-h-[64px] items-center gap-4 rounded-2xl border border-line bg-white px-4 py-3 text-left transition hover:-translate-y-0.5 hover:border-accent-line hover:shadow-card">
+            <button key={t.key} onClick={() => onStart(t.key)} className="btn-3d group flex min-h-[64px] items-center gap-4 rounded-2xl border border-line bg-white px-4 py-3 text-left transition hover:-translate-y-0.5 hover:border-accent-line hover:shadow-card">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent-ink">
                 {[<BookOpenCheck key="e" size={19} />, <PencilLine key="m" size={19} />, <GraduationCap key="h" size={19} />][i]}
               </span>
@@ -171,12 +172,12 @@ export default function Classroom({ s, voiceReady }) {
   streakRef.current = state.profile.study_streak
 
   const say = useCallback(
-    (mood, custom) => {
+    (mood, custom, opts = {}) => {
       let pool = s.lines[mood]
       if (mood === 'praising' && s.lines.warm && streakRef.current >= 3) pool = s.lines.warm
       const text = custom || pick(pool)
       setDialogue((d) => ({ mood, text, key: d.key + 1 }))
-      if (voiceReady) speak(text, s.id)
+      if (voiceReady && !opts.silent) speak(text, s.id)
     },
     [s, voiceReady],
   )
@@ -219,6 +220,7 @@ export default function Classroom({ s, voiceReady }) {
           options={[
             ['lesson', 'Flashcards', Layers],
             ['practice', 'Practice', PencilLine],
+            ['voice', 'Voice lesson', Mic],
           ]}
         />
       </header>
@@ -226,7 +228,7 @@ export default function Classroom({ s, voiceReady }) {
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto px-4 pb-28 sm:px-8 lg:pb-8">
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(380px,1fr)]">
           <div className="min-w-0 space-y-5">
-            <Stage s={s} dialogue={dialogue} onMood={(m) => say(m)} onTalk={() => say('praising', { nino: 'W-what are you staring at?!', miku: '...!! D-don’t look at me so suddenly.', itsuki: 'Is there something on my face? ...Rice?', yotsuba: 'Shishishi! High five!', ichika: 'Fufu~ falling for onee-san already?' }[s.id])} onReplay={() => speak(dialogue.text, s.id)} voiceReady={voiceReady} />
+            <Stage s={s} dialogue={dialogue} onMood={(m) => say(m)} onTalk={() => say('praising', { nino: 'W-what are you staring at?!', miku: '...!! D-don’t look at me so suddenly.', itsuki: 'Is there something on my face? ...Rice?', yotsuba: 'Shishishi! High five!', ichika: 'Fufu~ falling for onee-san already?' }[s.id])} onReplay={() => speak(dialogue.text, s.id, { force: true })} voiceReady={voiceReady} />
             <div className={`grid gap-5 ${s.id === 'yotsuba' ? 'lg:grid-cols-[1fr_250px]' : ''}`}>
               <Dossier s={s} />
               {s.id === 'yotsuba' && <Pomodoro />}
@@ -235,6 +237,8 @@ export default function Classroom({ s, voiceReady }) {
           <section className="card scroll-thin flex min-h-[520px] flex-col p-4 sm:p-6 xl:sticky xl:top-0 xl:max-h-[calc(100vh-130px)] xl:overflow-y-auto">
             {tab === 'lesson' ? (
               <LessonDeck s={s} say={say} />
+            ) : tab === 'voice' ? (
+              <VoiceLesson s={s} say={say} />
             ) : mode ? (
               <Quiz
                 key={`${mode}-${runKey}`}
@@ -243,7 +247,7 @@ export default function Classroom({ s, voiceReady }) {
                 tier={mode}
                 sister={s.id}
                 subject={s.subj}
-                say={(mood, text) => say(mood, text)}
+                say={(mood, text, _sister, opts) => say(mood, text, opts)}
                 onExit={() => setMode(null)}
                 onRestart={() => setRunKey((k) => k + 1)}
               />

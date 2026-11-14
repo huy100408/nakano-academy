@@ -17,11 +17,14 @@ src/
   main.jsx, App.jsx            app shell: intro → AuthGate → Shell (sidebar HUD, views, mobile nav)
   features/auth/AuthGate.tsx   mandatory Google sign-in, OAuth callback handling, cloud hydration
   services/supabaseSync.ts     optimistic write queue → Supabase (debounced upserts, offline queue)
+  services/voiceTutor.ts       Fish Audio voices via the fish-tts Edge Function; pronunciation sanitizer; AnalyserNode waveform
+  services/sfxEngine.ts        Web Audio synthesized SFX (correct ding, wrong thud, fanfare, pop)
+  components/VoiceLesson.jsx   spoken step-by-step lesson per sister (module `lecture` arrays)
   state/useAcademy.tsx         all app state + actions (answer, finishSession, items, eggs, reset)
   lib/supabase.ts              Supabase client + redirect URL logic
   types/supabase.ts            generated: `supabase gen types typescript --project-id <ref>`
   data/sisters.js              the five tutors (theme colours, persona, dialogue lines)
-  data/subjects/*.js           lesson content, one module per sister (24 questions, 10 flashcards, 3 egg rounds)
+  data/subjects/*.js           lesson content, one module per sister (30 questions, 12 flashcards, 6-step `lecture`, 3 egg rounds)
   data/curriculum.js           MODULES, TIERS, QUESTION_INDEX, EGG_ROUNDS
   data/items.js                the five signature items
   components/                  Classroom, Stage, LessonDeck, Quiz, ReviewView, EggsView, ReportView, Sidebar (HUD)
@@ -29,6 +32,7 @@ src/
 electron/main.cjs, preload.cjs window, nakano:// sign-in link, Fish Audio voice bridge
 site/                          GitHub Pages landing page
 supabase/migrations/           SQL migrations (source of truth for the schema)
+supabase/functions/fish-tts/   Edge Function: auth check → cache lookup in Storage `tts-cache` → Fish Audio → upload
 ```
 
 Subjects and their keys (used everywhere, including the database): `math` (Ichika), `english` (Nino), `geo` = AP Human Geography (Miku), `cs` = Computer Science (Yotsuba), `science` (Itsuki).
@@ -57,6 +61,13 @@ Google only, through Supabase Auth with the PKCE flow.
 - Web: `signInWithOAuth` redirects back to the current page (`origin + pathname`, e.g. `/nakano-academy/learn/`). `detectSessionInUrl` finishes the code exchange; `AuthGate` shows a loading state until `getSession()` resolves, then strips `?code=` from the URL.
 - Desktop: `redirectTo: 'nakano://auth-callback'`, `skipBrowserRedirect: true`; the URL opens in the default browser via `window.nakano.auth.openExternal`. `electron/main.cjs` registers the `nakano` protocol, receives the link (`open-url` on macOS, `second-instance` argv on Windows) and forwards it; `AuthGate` calls `exchangeCodeForSession(code)`.
 - Supabase → Authentication → URL Configuration must allow: `https://huy100408.github.io/nakano-academy/**`, `http://localhost:5173/**`, `http://localhost:4173/**`, `nakano://auth-callback`.
+
+## Voice (Fish Audio)
+
+- Model `s2.1-pro-free`; one `reference_id` per sister in `services/voiceTutor.ts` and the Edge Function allow-list.
+- Production: `supabase.functions.invoke('fish-tts')` with the user's session. The function verifies the user with `auth.getUser`, hashes `model:reference_id:normalized_text`, serves `tts-cache/<hash>.mp3` if present, otherwise calls Fish Audio, uploads and returns the public URL.
+- Secrets live only in Supabase (`FISH_AUDIO_API_KEY`, `FISH_AUDIO_MODEL`) and in git-ignored `.env.local` for the `npm run dev` proxy at `/api/fish-tts` (vite.config.js). Never use a `VITE_` prefix for the key; check `grep -r sk-fish dist site-dist` after builds.
+- Preferences (`voice_enabled`, `voice_volume`, `voice_speed`, `sfx_enabled`) are columns on `user_profiles`.
 
 ## Environment
 

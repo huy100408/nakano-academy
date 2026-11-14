@@ -158,6 +158,7 @@ interface Ctx {
   logEggsRound: (r: { target: string; guessed: string; cluesUsed: number; multiplier: number; points: number; streak: number }) => void
   finishEggsGame: (g: { total: number; bestStreak: number }) => void
   resetProgress: () => void
+  setPrefs: (p: Pick<ProfilePatch, 'voice_enabled' | 'sfx_enabled' | 'voice_volume' | 'voice_speed'>) => void
 }
 
 const AcademyContext = createContext<Ctx | null>(null)
@@ -327,6 +328,14 @@ export function AcademyProvider({ sync, initial, children }: { sync: SupabaseSyn
     sync.enqueueProfile({ preferred_sister: s.profile.preferred_sister })
   }, [commit, sync])
 
+  const setPrefs: Ctx['setPrefs'] = useCallback(
+    (patch) => {
+      const s = ref.current
+      commit({ ...s, profile: { ...s.profile, ...patch } as Profile }, patch)
+    },
+    [commit],
+  )
+
   const value = useMemo<Ctx>(
     () => ({
       state,
@@ -341,8 +350,9 @@ export function AcademyProvider({ sync, initial, children }: { sync: SupabaseSyn
       logEggsRound,
       finishEggsGame,
       resetProgress,
+      setPrefs,
     }),
-    [state, syncStatus, answer, finishSession, consumeItem, setPreferredSister, logEggsRound, finishEggsGame, resetProgress],
+    [state, syncStatus, answer, finishSession, consumeItem, setPreferredSister, logEggsRound, finishEggsGame, resetProgress, setPrefs],
   )
   return <AcademyContext.Provider value={value}>{children}</AcademyContext.Provider>
 }

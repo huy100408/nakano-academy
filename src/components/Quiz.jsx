@@ -4,6 +4,8 @@ import { MODULES, tierOf } from '../data/curriculum.js'
 import { ITEMS, itemByKey } from '../data/items.js'
 import { bySubject, byId } from '../data/sisters.js'
 import { useAcademy } from '../state/useAcademy'
+import { afterSfx, playCorrect, playFanfare, playWrong } from '../services/sfxEngine'
+import { speak, stopVoice } from '../services/voiceTutor'
 import { Avatar, Eyebrow, ITEM_ICONS, Kbd, Ring, pick, shuffle, toast } from './ui.jsx'
 
 const LETTERS = 'ABCD'
@@ -40,31 +42,43 @@ export default function Quiz({ title, questions, tier, sister, subject, say, onE
   const [itemsUsed, setItemsUsed] = useState({})
   const [summary, setSummary] = useState(null)
   const answeredQi = useRef(-1)
+  const [burst, setBurst] = useState(null)
   const q = run[qi]
   const total = run.length
   const correct = results.filter(Boolean).length
   const speaker = q ? bySubject(q.subject) : byId(sister)
+
+  const res_sfx = (ok) => (ok ? playCorrect() : playWrong())
 
   const choose = (i) => {
     if (!q || picked !== null || hidden.includes(i) || answeredQi.current === qi) return
     answeredQi.current = qi
     setPicked(i)
     const ok = i === q.answer
+    // Sound first, the same instant the answer is judged…
+    if (ok) res_sfx(true)
+    else res_sfx(false)
     const res = answer({ subject: q.subject, questionId: q.id, correct: ok, doubled })
     setResults((r) => [...r, ok])
     setScore((s) => s + res.points)
     setMaruo((m) => m + res.approvalDelta)
+    if (ok) setBurst({ qi, points: res.points })
+    if (res.milestone && res.milestone >= 5) playFanfare()
     const line = reactionFor(q.subject, ok ? 'correct' : 'mistake', res.milestone)
-    say(ok ? 'praising' : 'scolding', res.shielded ? `${line} (The kitchen timer saved your streak.)` : line, speaker.id)
+    say(ok ? 'praising' : 'scolding', res.shielded ? `${line} (The kitchen timer saved your streak.)` : line, speaker.id, { silent: true })
+    // …then the tutor's spoken reaction and explanation.
+    afterSfx(ok ? 420 : 520).then(() => speak(`${line} ${q.explain}`, speaker.id))
     if (res.shielded) toast('Streak Shield used: your streak is safe', { icon: ShieldCheck })
     if (res.milestone) toast(`${res.milestone}-answer streak!`, { icon: Sparkles })
   }
 
   const next = () => {
     if (picked === null || summary) return
+    stopVoice()
     if (qi + 1 >= total) {
       const s = finishSession({ sister, subject, tier, correct, total, score, maruoDelta: maruo, itemsUsed })
       setSummary(s)
+      playFanfare()
       const pct = total ? correct / total : 0
       say(pct >= 0.8 ? 'praising' : pct >= 0.5 ? 'teaching' : 'scolding', undefined, byId(sister)?.id || speaker.id)
       if (s.bonusItem) toast(`Earned: ${itemByKey(s.bonusItem).name}`, { icon: Medal })
@@ -89,10 +103,16 @@ export default function Quiz({ title, questions, tier, sister, subject, say, onE
     if (!consumeItem(key)) return toast(`No ${item.name} left. Score 80%+ in ${byId(item.sister).first}'s sessions to earn more.`, { ms: 4000 })
     setItemsUsed((u) => ({ ...u, [key]: (u[key] || 0) + 1 }))
     if (key === 'ichika_notes') setHidden(shuffle([0, 1, 2, 3].filter((k) => k !== q.answer)).slice(0, 2))
-    if (key === 'miku_headphones') setHint(q.hint)
+    if (key === 'miku_headphones') {
+      setHint(q.hint)
+      say('teaching', item.line, item.sister, { silent: true })
+      speak(q.hint, 'miku')
+      return
+    }
     if (key === 'yotsuba_ribbon') setDoubled(true)
     if (key === 'itsuki_bun') toast('+10% Maruo approval')
-    say('teaching', item.line, item.sister)
+    say('teaching', item.line, item.sister, { silent: true })
+    speak(item.line, item.sister)
   }
 
   useEffect(() => {
@@ -154,7 +174,7 @@ export default function Quiz({ title, questions, tier, sister, subject, say, onE
           <button onClick={onExit} className="flex min-h-[46px] items-center justify-center gap-2 rounded-xl border border-line px-4 text-[14px] font-bold hover:bg-ink/[.03]">
             <LogOut size={15} /> Done
           </button>
-          <button onClick={onRestart} className="flex min-h-[46px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[14px] font-bold text-on-accent hover:brightness-105">
+          <button onClick={onRestart} className="btn-3d btn-3d-accent flex min-h-[46px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[14px] font-bold text-on-accent hover:brightness-105">
             <RotateCcw size={15} /> Another round <Kbd>↵</Kbd>
           </button>
         </div>
@@ -215,10 +235,21 @@ export default function Quiz({ title, questions, tier, sister, subject, say, onE
           return (
             <button
               key={i}
+              data-nopop
               disabled={gone || picked !== null}
               onClick={() => choose(i)}
-              className={`group flex min-h-[48px] items-center gap-3 rounded-xl border-[1.5px] px-3.5 py-2.5 text-left text-[14.5px] font-medium transition ${cls} ${gone ? 'pointer-events-none opacity-25 line-through' : ''}`}
+              className={`btn-3d group relative flex min-h-[48px] items-center gap-3 rounded-xl border-[1.5px] px-3.5 py-2.5 text-left text-[14.5px] font-medium ${cls} ${gone ? 'pointer-events-none opacity-25 line-through' : ''} ${picked !== null && isAns && isPick ? 'anim-correct' : ''} ${picked !== null && isPick && !isAns ? 'anim-shake' : ''}`}
             >
+              {burst && burst.qi === qi && isAns && isPick && (
+                <>
+                  <span className="score-float">+{burst.points}</span>
+                  <span className="confetti" aria-hidden>
+                    {Array.from({ length: 14 }, (_, k) => (
+                      <i key={k} style={{ '--a': `${(k / 14) * 360}deg`, '--c': ['#22c55e', 'var(--accent)', '#f59e0b', '#3b82f6'][k % 4] }} />
+                    ))}
+                  </span>
+                </>
+              )}
               <span
                 className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg font-mono text-[12px] font-bold transition ${
                   picked !== null && isAns ? 'bg-green-500 text-white' : picked !== null && isPick ? 'bg-red-500 text-white' : 'bg-ink/[.05] text-muted group-hover:bg-accent group-hover:text-on-accent'
@@ -253,7 +284,7 @@ export default function Quiz({ title, questions, tier, sister, subject, say, onE
                 key={it.key}
                 onClick={() => use(it.key)}
                 title={`${it.name}: ${it.desc}`}
-                className={`relative flex min-h-[40px] items-center gap-1.5 rounded-xl border px-2.5 text-[12px] font-bold transition ${n ? 'border-line bg-white hover:-translate-y-0.5 hover:shadow-card' : 'border-dashed border-line text-faint'}`}
+                className={`btn-3d relative flex min-h-[40px] items-center gap-1.5 rounded-xl border px-2.5 text-[12px] font-bold transition ${n ? 'border-line bg-white hover:-translate-y-0.5 hover:shadow-card' : 'border-dashed border-line text-faint'}`}
               >
                 <span className="grid h-6 w-6 place-items-center rounded-md" style={{ background: n ? owner.color : 'rgb(24 24 29 / .06)', color: n ? owner.onAccent : undefined }}>
                   <Icon size={13} />
@@ -265,7 +296,7 @@ export default function Quiz({ title, questions, tier, sister, subject, say, onE
             )
           })}
           {picked !== null && (
-            <button onClick={next} className="ml-auto flex min-h-[44px] items-center gap-2 rounded-xl bg-ink px-5 text-[14px] font-bold text-white hover:bg-ink/85">
+            <button onClick={next} className="btn-3d ml-auto flex min-h-[44px] items-center gap-2 rounded-xl bg-ink px-5 text-[14px] font-bold text-white hover:bg-ink/85">
               {qi + 1 >= total ? 'Finish' : 'Next'} <ArrowRight size={15} />
             </button>
           )}

@@ -13,8 +13,6 @@ interface Window {
   nakano?: {
     platform: string
     isDesktop: true
-    settings: { get: () => Promise<any>; set: (patch: any) => Promise<any> }
-    voice: { speak: (text: string, sister: string, force?: boolean) => Promise<any> }
     auth: {
       openExternal: (url: string) => Promise<boolean>
       onCallback: (cb: (url: string) => void) => () => void

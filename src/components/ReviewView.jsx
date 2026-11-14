@@ -135,7 +135,7 @@ export default function ReviewView({ rescue = false, onDone }) {
                       setRunning(true)
                       setRunKey((k) => k + 1)
                     }}
-                    className="mt-5 min-h-[46px] rounded-xl bg-ink px-6 text-[14px] font-bold text-white hover:bg-ink/85"
+                    className="btn-3d mt-5 min-h-[46px] rounded-xl bg-ink px-6 text-[14px] font-bold text-white hover:bg-ink/85"
                   >
                     Start review
                   </button>
