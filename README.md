@@ -32,7 +32,7 @@ Runs in the browser, on **macOS** (`.dmg`, Apple Silicon and Intel) and on **Win
 
 Get the latest installer from the [Releases](https://github.com/huy100408/nakano-academy/releases) page.
 
-> The builds are not code-signed. On macOS, right-click the app and choose **Open** the first time. On Windows, click **More info → Run anyway** in SmartScreen.
+> The builds are not notarized. On macOS, open the app once, then go to **System Settings → Privacy & Security → Open Anyway** (or run `xattr -dr com.apple.quarantine "/Applications/Nakano Academy.app"`). On Windows, click **More info → Run anyway** in SmartScreen.
 
 ## Development
 

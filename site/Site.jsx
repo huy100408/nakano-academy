@@ -698,11 +698,11 @@ function DownloadSection({ os }) {
     mac: [
       ['Download the .dmg', 'Pick Apple Silicon (M1–M4) or Intel. Not sure? Apple menu → About This Mac → Chip.'],
       ['Drag to Applications', 'Open the .dmg and drag Nakano Academy into the Applications folder.'],
-      ['First launch', 'The app is not notarized yet. Right-click it and choose Open, then Open again. Or allow it in System Settings → Privacy & Security.'],
+      ['First launch', 'The app is free and not notarized by Apple, so macOS warns you the first time. Open it once, click Done, then go to System Settings → Privacy & Security, scroll down and click Open Anyway. Advanced: run xattr -dr com.apple.quarantine "/Applications/Nakano Academy.app" in Terminal.'],
     ],
     win: [
       ['Download the installer', 'One .exe for 64-bit Windows 10 and 11.'],
-      ['Run it', 'SmartScreen may warn about an unrecognized app because it is not code-signed yet. Click More info → Run anyway.'],
+      ['Run it', 'SmartScreen may warn about an unrecognized app because it is not code-signed yet. Click More info → Run anyway, then follow the installer. The app opens when it finishes.'],
       ['Pick a folder', 'Choose where to install. A desktop and Start Menu shortcut are created for you.'],
     ],
   }

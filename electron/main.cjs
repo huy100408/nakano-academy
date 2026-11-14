@@ -1,5 +1,12 @@
 // Electron main process: window, settings storage, and the Fish Audio voice bridge.
-const { app, BrowserWindow, ipcMain, shell, nativeTheme, session } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, nativeTheme, session, dialog } = require('electron')
+
+// Never fail silently: if startup breaks, tell the user what happened.
+process.on('uncaughtException', (err) => {
+  try {
+    dialog.showErrorBox('Nakano Academy hit a problem', String((err && err.stack) || err))
+  } catch {}
+})
 const path = require('node:path')
 const fs = require('node:fs')
 
@@ -127,8 +134,8 @@ function createWindow() {
     title: 'Nakano Academy',
     titleBarStyle: isMac ? 'hiddenInset' : 'hidden',
     trafficLightPosition: { x: 18, y: 20 },
-    ...(isMac ? {} : { titleBarOverlay: { color: '#00000000', symbolColor: '#3F3F46', height: 44 } }),
-    icon: path.join(__dirname, '..', 'build', 'icon.png'),
+    ...(isMac ? {} : { titleBarOverlay: { color: '#f6f3ee', symbolColor: '#3f3f46', height: 44 } }),
+    ...(fs.existsSync(path.join(__dirname, '..', 'build', 'icon.png')) ? { icon: path.join(__dirname, '..', 'build', 'icon.png') } : {}),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -141,6 +148,15 @@ function createWindow() {
   mainWindow = win
   win.on('closed', () => (mainWindow = null))
   win.once('ready-to-show', () => win.show())
+  // Show the window even if the first paint is slow or the page fails, so it never stays invisible.
+  setTimeout(() => !win.isDestroyed() && !win.isVisible() && win.show(), 3000)
+  win.webContents.on('did-fail-load', (_e, code, desc, url) => {
+    win.show()
+    dialog.showErrorBox('Nakano Academy could not load', `${desc} (${code})\n${url}`)
+  })
+  win.webContents.on('render-process-gone', (_e, details) => {
+    dialog.showErrorBox('Nakano Academy stopped', `The window process exited: ${details.reason}. Please reopen the app.`)
+  })
 
   // Open external links in the user's browser, never inside the app.
   win.webContents.setWindowOpenHandler(({ url }) => {
